@@ -68,6 +68,29 @@ textarea, input {
 }
 
 .hidden { display: none; }
+
+.image-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.image-row img {
+  width: 30%;
+  max-width: 250px;
+}
+
+.question-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.question-box.viewed {
+  background: #d4edda;
+}
 </style>
 </head>
 
@@ -82,6 +105,9 @@ textarea, input {
     </div>
   </div>
 </header>
+
+<!-- TOP IMAGES -->
+<div id="top-images" class="image-row"></div>
 
 <section>
 <h2>Our Mission</h2>
@@ -109,16 +135,22 @@ textarea, input {
 <button class="button" onclick="submitQuestion()">Send Question</button>
 </section>
 
-<!-- ADMIN -->
+<!-- BOTTOM IMAGES -->
+<div id="bottom-images" class="image-row"></div>
+
+<!-- ADMIN PANEL -->
 <div id="admin-area" class="hidden">
 <section>
 <h3>Admin Panel</h3>
 
-<label>Upload Logo</label>
-<input type="file" accept="image/*" onchange="previewLogo(event)">
+<label>Upload Top Images (max 3)</label>
+<input type="file" multiple accept="image/*" onchange="uploadImages(event,'top')">
 
-<label>Donation Link</label>
-<input id="donate-link">
+<label>Upload Bottom Images (max 3)</label>
+<input type="file" multiple accept="image/*" onchange="uploadImages(event,'bottom')">
+
+<h4>Submitted Questions</h4>
+<div id="admin-questions"></div>
 
 <button class="button" onclick="saveChanges()">Save Changes</button>
 </section>
@@ -130,122 +162,110 @@ textarea, input {
 </footer>
 
 <script>
-/* =========================
-   HARD DEFAULT CONTENT
-   ========================= */
+const PASSWORD = "admin123";
 
+/* DEFAULT TEXT */
 const DEFAULT_CONTENT = {
   title: "Restoring Smiles with Smile Forward",
   orgText: "A student based Non-Profit organization based in Mississauga promoting oral health awareness",
-  mission:
-    "For many people, brushing their teeth is a simple daily habit. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often unavailable. Without preventative care, minor dental issues can develop into painful infections that affect overall health, confidence, and dignity. Our mission is to bridge this gap by providing essential oral health kits that empower individuals to care for themselves.",
-  why:
-    "Oral health is deeply connected to overall physical and mental health. Poor oral hygiene has been linked to heart disease, diabetes, respiratory infections, and chronic pain. Addressing oral health means addressing overall well-being, confidence, and long-term quality of life.",
-  donate:
-    "Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every contribution helps provide essential oral hygiene supplies that prevent pain, infection, and long-term complications. Together, we can create healthier smiles and stronger communities."
+  mission: "For many people, brushing their teeth is a simple daily habit—something done almost automatically, without a second thought. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often unavailable. Without preventative care, minor dental issues can develop into painful infections that affect overall health, confidence, and dignity. Our mission is to bridge this gap by providing essential oral health kits that empower individuals to care for themselves.",
+  why: "Oral health is far more than just a bright smile—it is a critical component of overall physical and mental health. Poor oral hygiene has been linked to heart disease, diabetes, respiratory infections, and chronic inflammation. Addressing oral health means addressing overall well-being, confidence, and quality of life.",
+  donate: "Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every donation directly contributes to providing essential oral hygiene supplies that help prevent pain, infection, and long-term complications. Together, we can create healthier smiles and stronger communities."
 };
 
-/* =========================
-   SAFE LOAD (NO UNDEFINED)
-   ========================= */
-
-function safeLoad(id, key) {
+/* SAFE LOAD */
+function loadText(id, key) {
   const saved = localStorage.getItem(key);
-  document.getElementById(id).innerText =
-    (typeof saved === "string" && saved.trim() !== "")
-      ? saved
-      : DEFAULT_CONTENT[key];
+  document.getElementById(id).innerText = saved || DEFAULT_CONTENT[key];
+}
+
+function loadImages(position) {
+  const data = JSON.parse(localStorage.getItem(position+"Images") || "[]");
+  const container = document.getElementById(position+"-images");
+  container.innerHTML = "";
+  data.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    container.appendChild(img);
+  });
 }
 
 window.onload = () => {
-  safeLoad("title", "title");
-  safeLoad("org-text", "orgText");
-  safeLoad("mission", "mission");
-  safeLoad("why", "why");
-  safeLoad("donate-text", "donate");
+  loadText("title","title");
+  loadText("org-text","orgText");
+  loadText("mission","mission");
+  loadText("why","why");
+  loadText("donate-text","donate");
+
+  loadImages("top");
+  loadImages("bottom");
 
   const logo = localStorage.getItem("logo");
   if (logo) {
-    const img = document.getElementById("logo");
-    img.src = logo;
-    img.style.display = "block";
+    document.getElementById("logo").src = logo;
+    document.getElementById("logo").style.display = "block";
   }
 
   const link = localStorage.getItem("donateLink");
   if (link) document.getElementById("donate-button").href = link;
 };
 
-/* =========================
-   ADMIN SYSTEM
-   ========================= */
-
-const PASSWORD = "admin123";
-let draft = {};
-let logoDraft = null;
-
+/* ADMIN */
 function adminLogin() {
   if (prompt("Password") === PASSWORD) {
     document.getElementById("admin-area").classList.remove("hidden");
-    enterAdmin();
+    loadAdminQuestions();
   }
 }
 
-function enterAdmin() {
-  ["title","org-text","mission","why","donate-text"].forEach(id => {
-    const el = document.getElementById(id);
-    draft[id] = el.innerText;
-    el.innerHTML = `<textarea>${el.innerText}</textarea>`;
+function uploadImages(e, position) {
+  const files = Array.from(e.target.files).slice(0,3);
+  const stored = [];
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      stored.push(reader.result);
+      localStorage.setItem(position+"Images", JSON.stringify(stored));
+      loadImages(position);
+    };
+    reader.readAsDataURL(file);
   });
-
-  document.getElementById("donate-link").value =
-    localStorage.getItem("donateLink") || "";
 }
 
-function saveChanges() {
-  Object.keys(draft).forEach(id => {
-    const textarea = document.querySelector(`#${id} textarea`);
-    if (textarea && textarea.value.trim() !== "") {
-      localStorage.setItem(
-        id === "org-text" ? "orgText" :
-        id === "donate-text" ? "donate" : id,
-        textarea.value
-      );
-    }
-  });
-
-  if (logoDraft) localStorage.setItem("logo", logoDraft);
-  localStorage.setItem("donateLink", document.getElementById("donate-link").value);
-
-  location.reload();
-}
-
-function previewLogo(e) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    logoDraft = reader.result;
-    const img = document.getElementById("logo");
-    img.src = reader.result;
-    img.style.display = "block";
-  };
-  reader.readAsDataURL(e.target.files[0]);
-}
-
-/* =========================
-   QUESTIONS
-   ========================= */
-
+/* QUESTIONS */
 function submitQuestion() {
   const qs = JSON.parse(localStorage.getItem("questions") || "[]");
   qs.push({
     name: document.getElementById("q-name").value || "Anonymous",
     email: document.getElementById("q-email").value,
-    question: document.getElementById("q-text").value
+    question: document.getElementById("q-text").value,
+    viewed: false
   });
   localStorage.setItem("questions", JSON.stringify(qs));
   alert("Question sent!");
+}
+
+function loadAdminQuestions() {
+  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
+  const box = document.getElementById("admin-questions");
+  box.innerHTML = "";
+  qs.forEach((q,i)=>{
+    const div = document.createElement("div");
+    div.className = "question-box" + (q.viewed ? " viewed":"");
+    div.innerText = `${q.name}: ${q.question}`;
+    div.onclick = () => {
+      q.viewed = true;
+      localStorage.setItem("questions", JSON.stringify(qs));
+      loadAdminQuestions();
+    };
+    box.appendChild(div);
+  });
+}
+
+function saveChanges() {
+  location.reload();
 }
 </script>
 
 </body>
 </html>
-
