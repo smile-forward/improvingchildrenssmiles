@@ -11,12 +11,11 @@ body {
   margin: 0;
   background: #f9f9f9;
   color: #333;
-  line-height: 1.6;
 }
 
 header {
   background: #cfe2ff;
-  padding: 30px 20px;
+  padding: 30px;
 }
 
 .header-wrap {
@@ -28,23 +27,23 @@ header {
   text-align: center;
 }
 
-.header-wrap img {
+#logo {
   height: 90px;
-  background: transparent;
+  display: none;
 }
 
 section {
-  padding: 18px 20px;
   max-width: 900px;
   margin: auto;
+  padding: 18px;
 }
 
 .button {
   background: #5c86cb;
   color: white;
   padding: 12px 22px;
-  border-radius: 5px;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
@@ -61,25 +60,27 @@ footer {
   cursor: pointer;
 }
 
-.editable textarea {
+textarea, input, select {
   width: 100%;
-  min-height: 140px;
+  margin-top: 8px;
+  padding: 8px;
   font-family: "Times New Roman", serif;
-  font-size: 1em;
 }
 
 .image-box {
   border: 2px dotted #999;
   padding: 20px;
-  margin: 30px auto;
-  max-width: 900px;
-  text-align: center;
+  margin: 25px auto;
   display: none;
 }
 
 .image-preview img {
   max-width: 100%;
-  margin: 10px 0;
+  margin-top: 10px;
+}
+
+.hidden {
+  display: none;
 }
 </style>
 </head>
@@ -88,57 +89,64 @@ footer {
 
 <header>
   <div class="header-wrap">
-    <img src="Screenshot 2025-12-24 2.56.40 PM.png" alt="Smile Forward Logo">
+    <img id="logo">
     <div>
       <h1 id="title">Restoring Smiles with Smile Forward</h1>
-      <p id="org-text">
-        A student based Non-Profit organization based in Mississauga promoting oral health awareness
-      </p>
+      <p id="org-text">A student based Non-Profit organization based in Mississauga promoting oral health awareness</p>
     </div>
   </div>
 </header>
 
-<!-- TOP IMAGE SECTION -->
-<div id="top-images" class="image-preview"></div>
-<div id="top-upload" class="image-box">
-  <input type="file" multiple accept="image/*" onchange="uploadImages(event,'top-images')">
-</div>
-
-<section>
+<section id="mission-section">
 <h2>Our Mission</h2>
-<div id="mission" class="editable">
-<p>
-For many people, oral hygiene is a routine part of daily life—something done almost automatically. However, for individuals experiencing homelessness, access to even the most basic oral health supplies is often limited or completely unavailable. Without toothbrushes, toothpaste, or floss, minor dental issues can escalate into painful infections and long-term health complications.
+<p id="mission">
+For many people, brushing their teeth is a simple daily habit. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often unavailable. Without preventative care, minor dental issues can develop into painful infections that affect overall health, confidence, and dignity. Our mission is to bridge this gap by providing essential oral health kits that empower individuals to care for themselves. Through compassion, education, and action, we aim to restore not just smiles, but confidence and well-being.
 </p>
-<p>
-This initiative provides essential oral hygiene kits including toothbrushes, toothpaste, floss, and dental care tools. These supplies help prevent infections, reduce pain, and restore dignity while supporting overall health and confidence.
-</p>
-</div>
 </section>
 
 <section>
 <h2>Why Oral Health Matters</h2>
-<div id="why" class="editable">
-<p>
-Oral health is directly connected to overall physical and mental well-being. Poor oral health has been linked to heart disease, diabetes, and respiratory infections. For individuals without access to dental care, these risks increase significantly.
+<p id="why">
+Oral health is deeply connected to overall physical and mental health. Poor oral hygiene has been linked to heart disease, diabetes, respiratory infections, and chronic pain. For vulnerable populations, these risks are magnified due to limited access to dental care. By addressing oral health, we are addressing long-term health outcomes, self-esteem, and quality of life. Preventative care is one of the simplest yet most powerful tools in reducing health disparities.
 </p>
-<p>
-Preventative oral care is one of the most accessible ways to protect long-term health. Providing basic supplies empowers individuals to care for themselves and improves quality of life.
-</p>
-</div>
 </section>
 
 <section>
 <h2>Donate</h2>
+<p id="donate-text">
+Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every contribution helps provide essential oral hygiene supplies that prevent pain, infection, and long-term complications. Donations directly fund toothbrushes, toothpaste, floss, and educational materials that make a meaningful difference. By giving today, you are supporting preventative care, promoting confidence, and showing compassion where it is needed most. Together, we can create healthier smiles and stronger communities.
+</p>
 <a id="donate-button" href="#" target="_blank">
   <button class="button">Donate Now</button>
 </a>
 </section>
 
-<!-- BOTTOM IMAGE SECTION -->
-<div id="bottom-images" class="image-preview"></div>
-<div id="bottom-upload" class="image-box">
-  <input type="file" multiple accept="image/*" onchange="uploadImages(event,'bottom-images')">
+<section>
+<h2>Have questions? Let us know!</h2>
+<input id="q-name" placeholder="Your name">
+<input id="q-email" placeholder="Your email">
+<label><input type="checkbox" id="q-anon"> Submit anonymously</label>
+<textarea id="q-text" placeholder="Your question"></textarea>
+<button class="button" onclick="submitQuestion()">Send Question</button>
+</section>
+
+<!-- ADMIN -->
+<div id="admin-area" class="hidden">
+<section>
+<h3>Admin Panel</h3>
+
+<label>Upload Logo</label>
+<input type="file" accept="image/*" onchange="uploadLogo(event)">
+
+<label>Donation Link</label>
+<input id="donate-link">
+
+<label>Questions</label>
+<select id="question-list" onchange="loadQuestion()"></select>
+<textarea id="question-response" placeholder="Write response..."></textarea>
+
+<button class="button" onclick="saveAndExit()">Save Changes</button>
+</section>
 </div>
 
 <footer>
@@ -149,98 +157,99 @@ Preventative oral care is one of the most accessible ways to protect long-term h
 <script>
 const PASSWORD = "admin123";
 
-/* LOAD SAVED CONTENT */
+/* LOAD */
 window.onload = () => {
-  loadText("title");
-  loadText("org-text");
-  loadText("mission");
-  loadText("why");
-  loadLink();
-  loadImages("top-images");
-  loadImages("bottom-images");
+  loadText();
+  loadLogo();
+  loadDonate();
+  loadQuestions();
 };
 
-/* ADMIN LOGIN */
+/* ADMIN */
 function adminLogin() {
-  const pw = prompt("Enter admin password:");
-  if (pw === PASSWORD) enableAdmin();
+  if (prompt("Password") === PASSWORD) {
+    document.getElementById("admin-area").classList.remove("hidden");
+    makeEditable();
+  }
 }
 
-function enableAdmin() {
-  document.querySelectorAll(".editable").forEach(el => {
-    const text = el.innerText;
-    el.innerHTML = `<textarea oninput="saveText('${el.id}',this.value)">${text}</textarea>`;
+function saveAndExit() {
+  saveText();
+  document.getElementById("admin-area").classList.add("hidden");
+  location.reload();
+}
+
+/* TEXT */
+function makeEditable() {
+  ["title","org-text","mission","why","donate-text"].forEach(id=>{
+    const el=document.getElementById(id);
+    el.innerHTML=`<textarea>${el.innerText}</textarea>`;
   });
+}
 
-  makeEditable("title");
-  makeEditable("org-text");
+function saveText() {
+  ["title","org-text","mission","why","donate-text"].forEach(id=>{
+    localStorage.setItem(id,document.getElementById(id).value);
+  });
+}
 
-  const linkInput = document.createElement("input");
-  linkInput.placeholder = "Paste donation link here";
-  linkInput.style.width = "100%";
-  linkInput.style.marginTop = "10px";
-  linkInput.value = localStorage.getItem("donateLink") || "";
-  linkInput.oninput = e => {
-    localStorage.setItem("donateLink", e.target.value);
-    document.getElementById("donate-button").href = e.target.value;
+function loadText() {
+  ["title","org-text","mission","why","donate-text"].forEach(id=>{
+    if(localStorage.getItem(id))
+      document.getElementById(id).innerText=localStorage.getItem(id);
+  });
+}
+
+/* LOGO */
+function uploadLogo(e){
+  const r=new FileReader();
+  r.onload=()=>{localStorage.setItem("logo",r.result);loadLogo();}
+  r.readAsDataURL(e.target.files[0]);
+}
+function loadLogo(){
+  const l=localStorage.getItem("logo");
+  if(l){document.getElementById("logo").src=l;document.getElementById("logo").style.display="block";}
+}
+
+/* DONATE */
+function loadDonate(){
+  const l=localStorage.getItem("donateLink");
+  if(l)document.getElementById("donate-button").href=l;
+  document.getElementById("donate-link").value=l||"";
+  document.getElementById("donate-link").oninput=e=>{
+    localStorage.setItem("donateLink",e.target.value);
   };
-  document.querySelector("section h2 + a").after(linkInput);
-
-  document.getElementById("top-upload").style.display = "block";
-  document.getElementById("bottom-upload").style.display = "block";
 }
 
-/* TEXT SAVE */
-function makeEditable(id) {
-  const el = document.getElementById(id);
-  const text = el.innerText;
-  el.innerHTML = `<textarea oninput="saveText('${id}',this.value)">${text}</textarea>`;
+/* QUESTIONS */
+function submitQuestion(){
+  const qs=JSON.parse(localStorage.getItem("questions")||"[]");
+  qs.push({
+    name:document.getElementById("q-anon").checked?"Anonymous":document.getElementById("q-name").value,
+    email:document.getElementById("q-email").value,
+    q:document.getElementById("q-text").value,
+    r:""
+  });
+  localStorage.setItem("questions",JSON.stringify(qs));
+  alert("Question sent!");
 }
 
-function saveText(id, value) {
-  localStorage.setItem(id, value);
-}
-
-function loadText(id) {
-  const saved = localStorage.getItem(id);
-  if (saved) document.getElementById(id).innerText = saved;
-}
-
-/* DONATE LINK */
-function loadLink() {
-  const link = localStorage.getItem("donateLink");
-  if (link) document.getElementById("donate-button").href = link;
-}
-
-/* IMAGE UPLOAD + SAVE */
-function uploadImages(event, sectionId) {
-  const preview = document.getElementById(sectionId);
-  const files = event.target.files;
-  let stored = [];
-
-  Array.from(files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      preview.appendChild(img);
-      stored.push(e.target.result);
-      localStorage.setItem(sectionId, JSON.stringify(stored));
-    };
-    reader.readAsDataURL(file);
+function loadQuestions(){
+  const qs=JSON.parse(localStorage.getItem("questions")||"[]");
+  const sel=document.getElementById("question-list");
+  sel.innerHTML="";
+  qs.forEach((q,i)=>{
+    sel.innerHTML+=`<option value="${i}">${q.name}</option>`;
   });
 }
 
-function loadImages(sectionId) {
-  const stored = JSON.parse(localStorage.getItem(sectionId) || "[]");
-  const preview = document.getElementById(sectionId);
-  stored.forEach(src => {
-    const img = document.createElement("img");
-    img.src = src;
-    preview.appendChild(img);
-  });
+function loadQuestion(){
+  const qs=JSON.parse(localStorage.getItem("questions"));
+  const i=document.getElementById("question-list").value;
+  document.getElementById("question-response").value=qs[i].r;
 }
 </script>
 
 </body>
 </html>
+
