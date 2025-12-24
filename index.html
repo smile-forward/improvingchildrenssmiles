@@ -1,148 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Restoring Smiles</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: "Times New Roman", serif;
-      margin: 0;
-      background: #f9f9f9;
-      color: #333;
-      line-height: 1.6;
-    }
+<meta charset="UTF-8">
+<title>Restoring Smiles</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    header {
-      background: #cfe2ff;
-      color: #333;
-      padding: 40px 20px;
-      text-align: center;
-    }
+<style>
+body {
+  font-family: "Times New Roman", serif;
+  margin: 0;
+  background: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+}
 
-    header h1 {
-      margin: 0 0 10px;
-    }
+.top-box {
+  background: #eef4ff;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.1em;
+}
 
-    header p {
-      margin: 0 0 20px;
-      font-size: 1.2em;
-    }
+header {
+  background: #cfe2ff;
+  padding: 35px 20px;
+  text-align: center;
+}
 
-    section {
-      padding: 30px 20px;
-      max-width: 800px;
-      margin: auto;
-    }
+section {
+  padding: 18px 20px; /* sections closer together */
+  max-width: 900px;
+  margin: auto;
+}
 
-    .button {
-      display: inline-block;
-      background: #5c86cb;
-      color: white;
-      padding: 12px 20px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 10px;
-      cursor: pointer;
-      border: none;
-      font-size: 1em;
-    }
+.button {
+  background: #5c86cb;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
 
-    <footer>
-  <p>© 2025 Restoring Smiles</p>
-  <p style="text-align:center; font-size:12px; margin-top:10px;">
-    <a href="#" onclick="document.getElementById('login-page').style.display='block'; return false;">Admin Login</a>
-  </p>
-</footer>
+footer {
+  background: #eee;
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+}
 
-    }
+/* Admin */
+#admin-link {
+  font-size: 11px;
+  color: #999;
+  cursor: pointer;
+}
 
-    /* Admin login page */
-    #login-page {
-      display: none;
-      padding: 50px;
-      text-align: center;
-    }
+.editable textarea {
+  width: 100%;
+  min-height: 120px;
+  font-family: "Times New Roman", serif;
+  font-size: 1em;
+}
 
-    #admin-form input[type="password"] {
-      padding: 10px;
-      margin: 10px 0;
-      width: 200px;
-      font-size: 1em;
-    }
+/* Upload box */
+#upload-box {
+  display: none;
+  border: 2px dotted #999;
+  padding: 20px;
+  text-align: center;
+  margin: 30px auto;
+  max-width: 900px;
+}
 
-  </style>
+#image-preview img {
+  max-width: 100%;
+  margin: 10px 0;
+}
+</style>
 </head>
+
 <body>
 
+<div class="top-box" id="top-text">
+Promote oral health awareness among younger students and community groups through engaging, student-led education and hands-on demonstrations.
+</div>
+
 <header>
-  <h1>Restoring Smiles, One Kit at a Time</h1>
-  <p>Improving smiles one day at a time</p>
+<h1 id="title">Restoring Smiles, One Kit at a Time</h1>
 </header>
 
 <section>
-  <h2>Our Mission</h2>
-  <p>
-    For many of us, brushing our teeth is a daily habit we don’t think twice about. 
-    But for individuals experiencing homelessness, access to basic oral health supplies is often a luxury they simply don’t have.
-  </p>
-  <p>
-    This fundraiser was created to provide essential oral hygiene kits, including toothbrushes, toothpaste, floss, and other dental care items, to people experiencing homelessness. 
-    These simple tools do more than protect teeth; they help prevent infections, reduce pain, and restore confidence and dignity.
-  </p>
+<h2>Our Mission</h2>
+<div id="mission" class="editable">
+<p>
+For many people, oral hygiene is a routine part of daily life—something done almost automatically without much thought. However, for individuals experiencing homelessness, access to even the most basic oral health supplies is often limited or completely unavailable. Without toothbrushes, toothpaste, or floss, minor dental issues can quickly escalate into painful infections, chronic discomfort, and long-term health complications.
+</p>
+<p>
+This initiative was created to address that gap by providing essential oral hygiene kits to individuals experiencing homelessness. Each kit includes items such as toothbrushes, toothpaste, floss, and other necessary dental care tools. These supplies are small, affordable, and easy to distribute, yet their impact is profound. Maintaining oral hygiene helps reduce pain, prevent infections, support overall health, and restore a sense of dignity and self-worth.
+</p>
+<p>
+Beyond physical health, oral care is deeply tied to confidence and social well-being. Dental pain or visible oral issues can make it difficult for individuals to speak comfortably, eat properly, or engage with others. By improving access to oral health supplies, this project aims not only to protect smiles, but to empower individuals with the confidence and comfort they deserve.
+</p>
+</div>
 </section>
 
 <section>
-  <h2>Why Oral Health Matters</h2>
-  <p>
-    Oral health affects overall health, confidence, and dignity.
-    Many people experiencing homelessness lack access to dental care
-    and basic hygiene supplies. Something as small as a toothbrush
-    can make a real difference.
-  </p>
+<h2>Why Oral Health Matters</h2>
+<div id="why" class="editable">
+<p>
+Oral health is often overlooked in discussions about healthcare, yet it plays a critical role in overall physical and mental well-being. Poor oral health has been linked to serious conditions such as heart disease, diabetes, and respiratory infections. For individuals without access to regular dental care, these risks are significantly increased.
+</p>
+<p>
+For those experiencing homelessness, barriers such as cost, transportation, and lack of insurance make professional dental care nearly impossible to access. As a result, preventable issues like cavities and gum disease can worsen over time, leading to severe pain and tooth loss. This can affect nutrition, speech, employability, and overall quality of life.
+</p>
+<p>
+Providing oral hygiene supplies is a practical and immediate way to reduce these risks. It is a form of preventative care that supports long-term health while also offering immediate relief and comfort. Everyone deserves the ability to care for their health, and oral care is a fundamental part of that right.
+</p>
+</div>
 </section>
 
 <section>
-  <h2>Donate</h2>
-  <p>You can make a secure donation directly on this page:</p>
-  
-  <!-- PayPal Donate Button -->
-  <form action="https://www.paypal.com/donate" method="post" target="_blank">
-    <input type="hidden" name="hosted_button_id" value="YOUR_PAYPAL_BUTTON_ID">
-    <button class="button" type="submit">Donate Now</button>
-  </form>
+<h2>Donate</h2>
+<form action="https://www.paypal.com/donate" method="post" target="_blank">
+<input type="hidden" name="hosted_button_id" id="paypal-id" value="YOUR_PAYPAL_ID">
+<button class="button">Donate Now</button>
+</form>
 </section>
 
-<!-- Admin Login Page -->
-<section id="login-page">
-  <h2>Admin Login</h2>
-  <form id="admin-form">
-    <input type="password" id="admin-password" placeholder="Enter Password">
-    <br>
-    <button class="button" type="button" onclick="checkPassword()">Login</button>
-  </form>
-  <p id="login-msg" style="color:red;"></p>
-</section>
+<!-- Image Upload -->
+<div id="upload-box">
+<p><strong>Upload images from your device</strong></p>
+<input type="file" multiple accept="image/*" onchange="previewImages(event)">
+<div id="image-preview"></div>
+</div>
 
 <footer>
-  <p>© 2025 Restoring Smiles</p>
+<p>© 2025 Restoring Smiles</p>
+<span id="admin-link" onclick="showAdmin()">admin</span>
 </footer>
 
 <script>
-  // Simple Admin Login (for static site)
-  const correctPassword = "admin123"; // change this to your desired password
-  function checkPassword() {
-    const pw = document.getElementById("admin-password").value;
-    const msg = document.getElementById("login-msg");
-    if(pw === correctPassword) {
-      msg.style.color = "green";
-      msg.innerText = "Logged in! You can now edit content.";
-      // Here you could reveal editing options
-    } else {
-      msg.style.color = "red";
-      msg.innerText = "Incorrect password!";
-    }
-  }
+const PASSWORD = "admin123";
+
+function showAdmin() {
+  const pw = prompt("Enter admin password:");
+  if (pw === PASSWORD) enableEditing();
+}
+
+function enableEditing() {
+  document.querySelectorAll(".editable").forEach(div => {
+    const text = div.innerText;
+    div.innerHTML = `<textarea>${text}</textarea>`;
+  });
+  document.getElementById("upload-box").style.display = "block";
+}
+
+function previewImages(event) {
+  const preview = document.getElementById("image-preview");
+  preview.innerHTML = "";
+  Array.from(event.target.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+}
 </script>
 
 </body>
