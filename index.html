@@ -67,9 +67,7 @@ textarea, input {
   font-family: "Times New Roman", serif;
 }
 
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 </style>
 </head>
 
@@ -79,31 +77,25 @@ textarea, input {
   <div class="header-wrap">
     <img id="logo" alt="Organization Logo">
     <div>
-      <h1 id="title">Restoring Smiles with Smile Forward</h1>
-      <p id="org-text">A student based Non-Profit organization based in Mississauga promoting oral health awareness</p>
+      <h1 id="title"></h1>
+      <p id="org-text"></p>
     </div>
   </div>
 </header>
 
 <section>
 <h2>Our Mission</h2>
-<p id="mission">
-For many people, brushing their teeth is a simple daily habit. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often unavailable. Without preventative care, minor dental issues can develop into painful infections that affect overall health, confidence, and dignity.
-</p>
+<p id="mission"></p>
 </section>
 
 <section>
 <h2>Why Oral Health Matters</h2>
-<p id="why">
-Oral health is deeply connected to overall physical and mental health. Poor oral hygiene has been linked to heart disease, diabetes, respiratory infections, and chronic pain.
-</p>
+<p id="why"></p>
 </section>
 
 <section>
 <h2>Donate</h2>
-<p id="donate-text">
-Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every contribution helps provide essential oral hygiene supplies and educational materials.
-</p>
+<p id="donate-text"></p>
 <a id="donate-button" href="#" target="_blank">
   <button class="button">Donate Now</button>
 </a>
@@ -117,7 +109,7 @@ Your support plays a vital role in restoring dignity and improving health for in
 <button class="button" onclick="submitQuestion()">Send Question</button>
 </section>
 
-<!-- ADMIN PANEL -->
+<!-- ADMIN -->
 <div id="admin-area" class="hidden">
 <section>
 <h3>Admin Panel</h3>
@@ -138,21 +130,39 @@ Your support plays a vital role in restoring dignity and improving health for in
 </footer>
 
 <script>
-const PASSWORD = "admin123";
-let adminDraft = {};
-let logoDraft = null;
+/* =========================
+   HARD DEFAULT CONTENT
+   ========================= */
 
-/* ---------- LOAD SAVED STATE ---------- */
-window.onload = () => {
-  loadSaved();
+const DEFAULT_CONTENT = {
+  title: "Restoring Smiles with Smile Forward",
+  orgText: "A student based Non-Profit organization based in Mississauga promoting oral health awareness",
+  mission:
+    "For many people, brushing their teeth is a simple daily habit. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often unavailable. Without preventative care, minor dental issues can develop into painful infections that affect overall health, confidence, and dignity. Our mission is to bridge this gap by providing essential oral health kits that empower individuals to care for themselves.",
+  why:
+    "Oral health is deeply connected to overall physical and mental health. Poor oral hygiene has been linked to heart disease, diabetes, respiratory infections, and chronic pain. Addressing oral health means addressing overall well-being, confidence, and long-term quality of life.",
+  donate:
+    "Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every contribution helps provide essential oral hygiene supplies that prevent pain, infection, and long-term complications. Together, we can create healthier smiles and stronger communities."
 };
 
-function loadSaved() {
-  const ids = ["title","org-text","mission","why","donate-text"];
-  ids.forEach(id => {
-    const saved = localStorage.getItem(id);
-    if (saved !== null) document.getElementById(id).innerText = saved;
-  });
+/* =========================
+   SAFE LOAD (NO UNDEFINED)
+   ========================= */
+
+function safeLoad(id, key) {
+  const saved = localStorage.getItem(key);
+  document.getElementById(id).innerText =
+    (typeof saved === "string" && saved.trim() !== "")
+      ? saved
+      : DEFAULT_CONTENT[key];
+}
+
+window.onload = () => {
+  safeLoad("title", "title");
+  safeLoad("org-text", "orgText");
+  safeLoad("mission", "mission");
+  safeLoad("why", "why");
+  safeLoad("donate-text", "donate");
 
   const logo = localStorage.getItem("logo");
   if (logo) {
@@ -163,22 +173,27 @@ function loadSaved() {
 
   const link = localStorage.getItem("donateLink");
   if (link) document.getElementById("donate-button").href = link;
-}
+};
 
-/* ---------- ADMIN LOGIN ---------- */
+/* =========================
+   ADMIN SYSTEM
+   ========================= */
+
+const PASSWORD = "admin123";
+let draft = {};
+let logoDraft = null;
+
 function adminLogin() {
   if (prompt("Password") === PASSWORD) {
+    document.getElementById("admin-area").classList.remove("hidden");
     enterAdmin();
   }
 }
 
 function enterAdmin() {
-  document.getElementById("admin-area").classList.remove("hidden");
-
-  const ids = ["title","org-text","mission","why","donate-text"];
-  ids.forEach(id => {
+  ["title","org-text","mission","why","donate-text"].forEach(id => {
     const el = document.getElementById(id);
-    adminDraft[id] = el.innerText; // snapshot
+    draft[id] = el.innerText;
     el.innerHTML = `<textarea>${el.innerText}</textarea>`;
   });
 
@@ -186,25 +201,24 @@ function enterAdmin() {
     localStorage.getItem("donateLink") || "";
 }
 
-/* ---------- SAVE (ONLY PLACE THAT COMMITS) ---------- */
 function saveChanges() {
-  const ids = ["title","org-text","mission","why","donate-text"];
-  ids.forEach(id => {
-    const val = document.getElementById(id).value;
-    localStorage.setItem(id, val);
+  Object.keys(draft).forEach(id => {
+    const textarea = document.querySelector(`#${id} textarea`);
+    if (textarea && textarea.value.trim() !== "") {
+      localStorage.setItem(
+        id === "org-text" ? "orgText" :
+        id === "donate-text" ? "donate" : id,
+        textarea.value
+      );
+    }
   });
 
   if (logoDraft) localStorage.setItem("logo", logoDraft);
-
-  localStorage.setItem(
-    "donateLink",
-    document.getElementById("donate-link").value
-  );
+  localStorage.setItem("donateLink", document.getElementById("donate-link").value);
 
   location.reload();
 }
 
-/* ---------- LOGO PREVIEW ---------- */
 function previewLogo(e) {
   const reader = new FileReader();
   reader.onload = () => {
@@ -216,7 +230,10 @@ function previewLogo(e) {
   reader.readAsDataURL(e.target.files[0]);
 }
 
-/* ---------- QUESTIONS ---------- */
+/* =========================
+   QUESTIONS
+   ========================= */
+
 function submitQuestion() {
   const qs = JSON.parse(localStorage.getItem("questions") || "[]");
   qs.push({
@@ -231,3 +248,4 @@ function submitQuestion() {
 
 </body>
 </html>
+
