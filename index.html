@@ -91,6 +91,12 @@ textarea, input {
 .question-box.viewed {
   background: #d4edda;
 }
+
+.editable-text {
+  border: 1px dashed #999;
+  padding: 5px;
+  min-height: 20px;
+}
 </style>
 </head>
 
@@ -221,8 +227,18 @@ window.onload = () => {
 function adminLogin() {
   if (prompt("Password") === PASSWORD) {
     document.getElementById("admin-area").classList.remove("hidden");
+    makeTextEditable();
     loadAdminQuestions();
   }
+}
+
+function makeTextEditable() {
+  const editableIds = ["title","org-text","mission","why","donate-text"];
+  editableIds.forEach(id => {
+    const el = document.getElementById(id);
+    const text = el.innerText;
+    el.innerHTML = `<textarea class="editable-text" id="${id}-input">${text}</textarea>`;
+  });
 }
 
 function uploadImages(e, position) {
@@ -271,12 +287,35 @@ function loadAdminQuestions() {
 
 /* SAVE CHANGES */
 function saveChanges() {
+  const editableIds = ["title","org-text","mission","why","donate-text"];
+  editableIds.forEach(id => {
+    const input = document.getElementById(id+"-input");
+    const value = input ? input.value.trim() : "";
+    if(value) {
+      localStorage.setItem(id, value);
+      document.getElementById(id).innerText = value;
+    } else {
+      // revert to previous/default if empty
+      document.getElementById(id).innerText = localStorage.getItem(id) || DEFAULT_CONTENT[id];
+    }
+  });
+
   // save donate link
   const donateLink = document.getElementById("donate-link-input").value;
   if(donateLink) {
     localStorage.setItem("donateLink", donateLink);
     document.getElementById("donate-button").href = donateLink;
   }
+
+  // remove textareas after saving
+  editableIds.forEach(id => {
+    const el = document.getElementById(id);
+    if(el.querySelector("textarea")) {
+      const text = el.querySelector("textarea").value;
+      el.innerText = text || localStorage.getItem(id) || DEFAULT_CONTENT[id];
+    }
+  });
+
   location.reload();
 }
 </script>
