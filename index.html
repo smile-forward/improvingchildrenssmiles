@@ -152,16 +152,13 @@ textarea, input {
 <h4>Submitted Questions</h4>
 <div id="admin-questions"></div>
 
+<!-- DONATE LINK SECTION -->
+<h4>Donate Button Link</h4>
+<input id="donate-link-input" placeholder="Enter Donate URL">
+
 <button class="button" onclick="saveChanges()">Save Changes</button>
 </section>
 </div>
-
-  <section>
-  <h2>Donate</h2>
-  <a id="donate-button" href="#" target="_blank">
-    <button class="button">Donate Now</button>
-  </a>
-</section>
 
 <footer>
 <p>© 2025 Smile Forward</p>
@@ -214,7 +211,10 @@ window.onload = () => {
   }
 
   const link = localStorage.getItem("donateLink");
-  if (link) document.getElementById("donate-button").href = link;
+  if (link) {
+    document.getElementById("donate-button").href = link;
+    document.getElementById("donate-link-input").value = link; // pre-fill input
+  }
 };
 
 /* ADMIN */
@@ -269,10 +269,18 @@ function loadAdminQuestions() {
   });
 }
 
+/* SAVE CHANGES */
 function saveChanges() {
+  // save donate link
+  const donateLink = document.getElementById("donate-link-input").value;
+  if(donateLink) {
+    localStorage.setItem("donateLink", donateLink);
+    document.getElementById("donate-button").href = donateLink;
+  }
   location.reload();
 }
 </script>
 
 </body>
 </html>
+
