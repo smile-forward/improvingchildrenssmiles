@@ -14,21 +14,27 @@ body {
   line-height: 1.6;
 }
 
-.top-box {
-  background: #eef4ff;
-  padding: 20px;
-  text-align: center;
-  font-size: 1.1em;
-}
-
 header {
   background: #cfe2ff;
-  padding: 35px 20px;
+  padding: 30px 20px;
+}
+
+.header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
   text-align: center;
+}
+
+.header-wrap img {
+  height: 90px;
+  background: transparent;
 }
 
 section {
-  padding: 18px 20px; /* sections closer together */
+  padding: 18px 20px;
   max-width: 900px;
   margin: auto;
 }
@@ -36,7 +42,7 @@ section {
 .button {
   background: #5c86cb;
   color: white;
-  padding: 12px 20px;
+  padding: 12px 22px;
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -49,7 +55,6 @@ footer {
   font-size: 12px;
 }
 
-/* Admin */
 #admin-link {
   font-size: 11px;
   color: #999;
@@ -58,22 +63,21 @@ footer {
 
 .editable textarea {
   width: 100%;
-  min-height: 120px;
+  min-height: 140px;
   font-family: "Times New Roman", serif;
   font-size: 1em;
 }
 
-/* Upload box */
-#upload-box {
-  display: none;
+.image-box {
   border: 2px dotted #999;
   padding: 20px;
-  text-align: center;
   margin: 30px auto;
   max-width: 900px;
+  text-align: center;
+  display: none;
 }
 
-#image-preview img {
+.image-preview img {
   max-width: 100%;
   margin: 10px 0;
 }
@@ -82,25 +86,32 @@ footer {
 
 <body>
 
-<div class="top-box" id="top-text">
-Promote oral health awareness among younger students and community groups through engaging, student-led education and hands-on demonstrations.
-</div>
-
 <header>
-<h1 id="title">Restoring Smiles, One Kit at a Time</h1>
+  <div class="header-wrap">
+    <img src="Screenshot 2025-12-24 2.56.40 PM.png" alt="Smile Forward Logo">
+    <div>
+      <h1 id="title">Restoring Smiles with Smile Forward</h1>
+      <p id="org-text">
+        A student based Non-Profit organization based in Mississauga promoting oral health awareness
+      </p>
+    </div>
+  </div>
 </header>
+
+<!-- TOP IMAGE SECTION -->
+<div id="top-images" class="image-preview"></div>
+<div id="top-upload" class="image-box">
+  <input type="file" multiple accept="image/*" onchange="uploadImages(event,'top-images')">
+</div>
 
 <section>
 <h2>Our Mission</h2>
 <div id="mission" class="editable">
 <p>
-For many people, oral hygiene is a routine part of daily life—something done almost automatically without much thought. However, for individuals experiencing homelessness, access to even the most basic oral health supplies is often limited or completely unavailable. Without toothbrushes, toothpaste, or floss, minor dental issues can quickly escalate into painful infections, chronic discomfort, and long-term health complications.
+For many people, oral hygiene is a routine part of daily life—something done almost automatically. However, for individuals experiencing homelessness, access to even the most basic oral health supplies is often limited or completely unavailable. Without toothbrushes, toothpaste, or floss, minor dental issues can escalate into painful infections and long-term health complications.
 </p>
 <p>
-This initiative was created to address that gap by providing essential oral hygiene kits to individuals experiencing homelessness. Each kit includes items such as toothbrushes, toothpaste, floss, and other necessary dental care tools. These supplies are small, affordable, and easy to distribute, yet their impact is profound. Maintaining oral hygiene helps reduce pain, prevent infections, support overall health, and restore a sense of dignity and self-worth.
-</p>
-<p>
-Beyond physical health, oral care is deeply tied to confidence and social well-being. Dental pain or visible oral issues can make it difficult for individuals to speak comfortably, eat properly, or engage with others. By improving access to oral health supplies, this project aims not only to protect smiles, but to empower individuals with the confidence and comfort they deserve.
+This initiative provides essential oral hygiene kits including toothbrushes, toothpaste, floss, and dental care tools. These supplies help prevent infections, reduce pain, and restore dignity while supporting overall health and confidence.
 </p>
 </div>
 </section>
@@ -109,64 +120,124 @@ Beyond physical health, oral care is deeply tied to confidence and social well-b
 <h2>Why Oral Health Matters</h2>
 <div id="why" class="editable">
 <p>
-Oral health is often overlooked in discussions about healthcare, yet it plays a critical role in overall physical and mental well-being. Poor oral health has been linked to serious conditions such as heart disease, diabetes, and respiratory infections. For individuals without access to regular dental care, these risks are significantly increased.
+Oral health is directly connected to overall physical and mental well-being. Poor oral health has been linked to heart disease, diabetes, and respiratory infections. For individuals without access to dental care, these risks increase significantly.
 </p>
 <p>
-For those experiencing homelessness, barriers such as cost, transportation, and lack of insurance make professional dental care nearly impossible to access. As a result, preventable issues like cavities and gum disease can worsen over time, leading to severe pain and tooth loss. This can affect nutrition, speech, employability, and overall quality of life.
-</p>
-<p>
-Providing oral hygiene supplies is a practical and immediate way to reduce these risks. It is a form of preventative care that supports long-term health while also offering immediate relief and comfort. Everyone deserves the ability to care for their health, and oral care is a fundamental part of that right.
+Preventative oral care is one of the most accessible ways to protect long-term health. Providing basic supplies empowers individuals to care for themselves and improves quality of life.
 </p>
 </div>
 </section>
 
 <section>
 <h2>Donate</h2>
-<form action="https://www.paypal.com/donate" method="post" target="_blank">
-<input type="hidden" name="hosted_button_id" id="paypal-id" value="YOUR_PAYPAL_ID">
-<button class="button">Donate Now</button>
-</form>
+<a id="donate-button" href="#" target="_blank">
+  <button class="button">Donate Now</button>
+</a>
 </section>
 
-<!-- Image Upload -->
-<div id="upload-box">
-<p><strong>Upload images from your device</strong></p>
-<input type="file" multiple accept="image/*" onchange="previewImages(event)">
-<div id="image-preview"></div>
+<!-- BOTTOM IMAGE SECTION -->
+<div id="bottom-images" class="image-preview"></div>
+<div id="bottom-upload" class="image-box">
+  <input type="file" multiple accept="image/*" onchange="uploadImages(event,'bottom-images')">
 </div>
 
 <footer>
-<p>© 2025 Restoring Smiles</p>
-<span id="admin-link" onclick="showAdmin()">admin</span>
+<p>© 2025 Smile Forward</p>
+<span id="admin-link" onclick="adminLogin()">admin</span>
 </footer>
 
 <script>
 const PASSWORD = "admin123";
 
-function showAdmin() {
+/* LOAD SAVED CONTENT */
+window.onload = () => {
+  loadText("title");
+  loadText("org-text");
+  loadText("mission");
+  loadText("why");
+  loadLink();
+  loadImages("top-images");
+  loadImages("bottom-images");
+};
+
+/* ADMIN LOGIN */
+function adminLogin() {
   const pw = prompt("Enter admin password:");
-  if (pw === PASSWORD) enableEditing();
+  if (pw === PASSWORD) enableAdmin();
 }
 
-function enableEditing() {
-  document.querySelectorAll(".editable").forEach(div => {
-    const text = div.innerText;
-    div.innerHTML = `<textarea>${text}</textarea>`;
+function enableAdmin() {
+  document.querySelectorAll(".editable").forEach(el => {
+    const text = el.innerText;
+    el.innerHTML = `<textarea oninput="saveText('${el.id}',this.value)">${text}</textarea>`;
   });
-  document.getElementById("upload-box").style.display = "block";
+
+  makeEditable("title");
+  makeEditable("org-text");
+
+  const linkInput = document.createElement("input");
+  linkInput.placeholder = "Paste donation link here";
+  linkInput.style.width = "100%";
+  linkInput.style.marginTop = "10px";
+  linkInput.value = localStorage.getItem("donateLink") || "";
+  linkInput.oninput = e => {
+    localStorage.setItem("donateLink", e.target.value);
+    document.getElementById("donate-button").href = e.target.value;
+  };
+  document.querySelector("section h2 + a").after(linkInput);
+
+  document.getElementById("top-upload").style.display = "block";
+  document.getElementById("bottom-upload").style.display = "block";
 }
 
-function previewImages(event) {
-  const preview = document.getElementById("image-preview");
-  preview.innerHTML = "";
-  Array.from(event.target.files).forEach(file => {
+/* TEXT SAVE */
+function makeEditable(id) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  el.innerHTML = `<textarea oninput="saveText('${id}',this.value)">${text}</textarea>`;
+}
+
+function saveText(id, value) {
+  localStorage.setItem(id, value);
+}
+
+function loadText(id) {
+  const saved = localStorage.getItem(id);
+  if (saved) document.getElementById(id).innerText = saved;
+}
+
+/* DONATE LINK */
+function loadLink() {
+  const link = localStorage.getItem("donateLink");
+  if (link) document.getElementById("donate-button").href = link;
+}
+
+/* IMAGE UPLOAD + SAVE */
+function uploadImages(event, sectionId) {
+  const preview = document.getElementById(sectionId);
+  const files = event.target.files;
+  let stored = [];
+
+  Array.from(files).forEach(file => {
     const reader = new FileReader();
     reader.onload = e => {
       const img = document.createElement("img");
       img.src = e.target.result;
       preview.appendChild(img);
+      stored.push(e.target.result);
+      localStorage.setItem(sectionId, JSON.stringify(stored));
     };
     reader.readAsDataURL(file);
+  });
+}
+
+function loadImages(sectionId) {
+  const stored = JSON.parse(localStorage.getItem(sectionId) || "[]");
+  const preview = document.getElementById(sectionId);
+  stored.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    preview.appendChild(img);
   });
 }
 </script>
