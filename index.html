@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Restoring Smiles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: "Times New Roman", serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #cfe2ff;
+      color: #333;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+    }
+
+    header p {
+      margin: 0 0 20px;
+      font-size: 1.2em;
+    }
+
+    section {
+      padding: 30px 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .button {
+      display: inline-block;
+      background: #5c86cb;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+      border: none;
+      font-size: 1em;
+    }
+
+    footer {
+      background: #eee;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+    }
+
+    /* Admin login page */
+    #login-page {
+      display: none;
+      padding: 50px;
+      text-align: center;
+    }
+
+    #admin-form input[type="password"] {
+      padding: 10px;
+      margin: 10px 0;
+      width: 200px;
+      font-size: 1em;
+    }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Restoring Smiles, One Kit at a Time</h1>
+  <p>Improving smiles one day at a time</p>
+</header>
+
+<section>
+  <h2>Our Mission</h2>
+  <p>
+    We believe everyone deserves access to basic oral healthcare. 
+    This initiative collects donations to provide toothbrushes, toothpaste,
+    floss, and other oral health supplies to individuals experiencing homelessness.
+  </p>
+</section>
+
+<section>
+  <h2>Why Oral Health Matters</h2>
+  <p>
+    Oral health affects overall health, confidence, and dignity.
+    Many people experiencing homelessness lack access to dental care
+    and basic hygiene supplies. Something as small as a toothbrush
+    can make a real difference.
+  </p>
+</section>
+
+<section>
+  <h2>Donate</h2>
+  <p>You can make a secure donation directly on this page:</p>
+  
+  <!-- PayPal Donate Button -->
+  <form action="https://www.paypal.com/donate" method="post" target="_blank">
+    <input type="hidden" name="hosted_button_id" value="YOUR_PAYPAL_BUTTON_ID">
+    <button class="button" type="submit">Donate Now</button>
+  </form>
+</section>
+
+<!-- Admin Login Page -->
+<section id="login-page">
+  <h2>Admin Login</h2>
+  <form id="admin-form">
+    <input type="password" id="admin-password" placeholder="Enter Password">
+    <br>
+    <button class="button" type="button" onclick="checkPassword()">Login</button>
+  </form>
+  <p id="login-msg" style="color:red;"></p>
+</section>
+
+<footer>
+  <p>© 2025 Restoring Smiles</p>
+</footer>
+
+<script>
+  // Simple Admin Login (for static site)
+  const correctPassword = "admin123"; // change this to your desired password
+  function checkPassword() {
+    const pw = document.getElementById("admin-password").value;
+    const msg = document.getElementById("login-msg");
+    if(pw === correctPassword) {
+      msg.style.color = "green";
+      msg.innerText = "Logged in! You can now edit content.";
+      // Here you could reveal editing options
+    } else {
+      msg.style.color = "red";
+      msg.innerText = "Incorrect password!";
+    }
+  }
+</script>
+
+</body>
+</html>
