@@ -60,7 +60,7 @@ footer {
   cursor: pointer;
 }
 
-textarea, input, select {
+textarea, input {
   width: 100%;
   margin-top: 8px;
   padding: 8px;
@@ -88,21 +88,21 @@ textarea, input, select {
 <section>
 <h2>Our Mission</h2>
 <p id="mission">
-For many people, brushing their teeth is a simple daily habit. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often unavailable. Without preventative care, minor dental issues can develop into painful infections that affect overall health, confidence, and dignity. Our mission is to bridge this gap by providing essential oral health kits that empower individuals to care for themselves. Through compassion, education, and action, we aim to restore not just smiles, but confidence and well-being.
+For many people, brushing their teeth is a simple daily habit. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often unavailable. Without preventative care, minor dental issues can develop into painful infections that affect overall health, confidence, and dignity.
 </p>
 </section>
 
 <section>
 <h2>Why Oral Health Matters</h2>
 <p id="why">
-Oral health is deeply connected to overall physical and mental health. Poor oral hygiene has been linked to heart disease, diabetes, respiratory infections, and chronic pain. For vulnerable populations, these risks are magnified due to limited access to dental care. By addressing oral health, we are addressing long-term health outcomes, self-esteem, and quality of life. Preventative care is one of the simplest yet most powerful tools in reducing health disparities.
+Oral health is deeply connected to overall physical and mental health. Poor oral hygiene has been linked to heart disease, diabetes, respiratory infections, and chronic pain.
 </p>
 </section>
 
 <section>
 <h2>Donate</h2>
 <p id="donate-text">
-Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every contribution helps provide essential oral hygiene supplies that prevent pain, infection, and long-term complications. Donations directly fund toothbrushes, toothpaste, floss, and educational materials that make a meaningful difference. By giving today, you are supporting preventative care, promoting confidence, and showing compassion where it is needed most. Together, we can create healthier smiles and stronger communities.
+Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every contribution helps provide essential oral hygiene supplies and educational materials.
 </p>
 <a id="donate-button" href="#" target="_blank">
   <button class="button">Donate Now</button>
@@ -123,15 +123,12 @@ Your support plays a vital role in restoring dignity and improving health for in
 <h3>Admin Panel</h3>
 
 <label>Upload Logo</label>
-<input type="file" accept="image/*" onchange="uploadLogo(event)">
+<input type="file" accept="image/*" onchange="previewLogo(event)">
 
 <label>Donation Link</label>
 <input id="donate-link">
 
-<label>Questions</label>
-<select id="question-list"></select>
-
-<button class="button" onclick="saveAndExit()">Save Changes</button>
+<button class="button" onclick="saveChanges()">Save Changes</button>
 </section>
 </div>
 
@@ -142,96 +139,93 @@ Your support plays a vital role in restoring dignity and improving health for in
 
 <script>
 const PASSWORD = "admin123";
-const originalText = {};
+let adminDraft = {};
+let logoDraft = null;
 
+/* ---------- LOAD SAVED STATE ---------- */
 window.onload = () => {
-  loadText();
-  loadLogo();
-  loadDonate();
-  loadQuestions();
+  loadSaved();
 };
 
-/* ADMIN */
+function loadSaved() {
+  const ids = ["title","org-text","mission","why","donate-text"];
+  ids.forEach(id => {
+    const saved = localStorage.getItem(id);
+    if (saved !== null) document.getElementById(id).innerText = saved;
+  });
+
+  const logo = localStorage.getItem("logo");
+  if (logo) {
+    const img = document.getElementById("logo");
+    img.src = logo;
+    img.style.display = "block";
+  }
+
+  const link = localStorage.getItem("donateLink");
+  if (link) document.getElementById("donate-button").href = link;
+}
+
+/* ---------- ADMIN LOGIN ---------- */
 function adminLogin() {
   if (prompt("Password") === PASSWORD) {
-    document.getElementById("admin-area").classList.remove("hidden");
-    enableEditing();
+    enterAdmin();
   }
 }
 
-function enableEditing() {
-  ["title","org-text","mission","why","donate-text"].forEach(id=>{
-    const el=document.getElementById(id);
-    originalText[id]=el.innerText;
-    el.innerHTML=`<textarea>${el.innerText}</textarea>`;
+function enterAdmin() {
+  document.getElementById("admin-area").classList.remove("hidden");
+
+  const ids = ["title","org-text","mission","why","donate-text"];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    adminDraft[id] = el.innerText; // snapshot
+    el.innerHTML = `<textarea>${el.innerText}</textarea>`;
   });
+
+  document.getElementById("donate-link").value =
+    localStorage.getItem("donateLink") || "";
 }
 
-function saveAndExit() {
-  ["title","org-text","mission","why","donate-text"].forEach(id=>{
-    const value=document.getElementById(id).value;
-    if(value && value!==originalText[id]) {
-      localStorage.setItem(id,value);
-    }
+/* ---------- SAVE (ONLY PLACE THAT COMMITS) ---------- */
+function saveChanges() {
+  const ids = ["title","org-text","mission","why","donate-text"];
+  ids.forEach(id => {
+    const val = document.getElementById(id).value;
+    localStorage.setItem(id, val);
   });
+
+  if (logoDraft) localStorage.setItem("logo", logoDraft);
+
+  localStorage.setItem(
+    "donateLink",
+    document.getElementById("donate-link").value
+  );
+
   location.reload();
 }
 
-/* TEXT */
-function loadText() {
-  ["title","org-text","mission","why","donate-text"].forEach(id=>{
-    const saved=localStorage.getItem(id);
-    if(saved) document.getElementById(id).innerText=saved;
-  });
-}
-
-/* LOGO */
-function uploadLogo(e){
-  const r=new FileReader();
-  r.onload=()=>{
-    localStorage.setItem("logo",r.result);
-    loadLogo();
+/* ---------- LOGO PREVIEW ---------- */
+function previewLogo(e) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    logoDraft = reader.result;
+    const img = document.getElementById("logo");
+    img.src = reader.result;
+    img.style.display = "block";
   };
-  r.readAsDataURL(e.target.files[0]);
-}
-function loadLogo(){
-  const l=localStorage.getItem("logo");
-  if(l){
-    const img=document.getElementById("logo");
-    img.src=l;
-    img.style.display="block";
-  }
+  reader.readAsDataURL(e.target.files[0]);
 }
 
-/* DONATE */
-function loadDonate(){
-  const l=localStorage.getItem("donateLink");
-  if(l) document.getElementById("donate-button").href=l;
-  document.getElementById("donate-link").value=l||"";
-  document.getElementById("donate-link").oninput=e=>{
-    localStorage.setItem("donateLink",e.target.value);
-  };
-}
-
-/* QUESTIONS */
-function submitQuestion(){
-  const qs=JSON.parse(localStorage.getItem("questions")||"[]");
+/* ---------- QUESTIONS ---------- */
+function submitQuestion() {
+  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
   qs.push({
-    name:document.getElementById("q-name").value || "Anonymous",
-    email:document.getElementById("q-email").value,
-    q:document.getElementById("q-text").value
+    name: document.getElementById("q-name").value || "Anonymous",
+    email: document.getElementById("q-email").value,
+    question: document.getElementById("q-text").value
   });
-  localStorage.setItem("questions",JSON.stringify(qs));
+  localStorage.setItem("questions", JSON.stringify(qs));
   alert("Question sent!");
-}
-
-function loadQuestions(){
-  const qs=JSON.parse(localStorage.getItem("questions")||"[]");
-  const sel=document.getElementById("question-list");
-  sel.innerHTML="";
-  qs.forEach(q=>{
-    sel.innerHTML+=`<option>${q.name}: ${q.q}</option>`;
-  });
 }
 </script>
 
