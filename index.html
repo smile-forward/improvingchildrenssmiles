@@ -92,18 +92,13 @@ textarea, input {
   background: #d4edda;
 }
 
-/* ✅ MOBILE DROPDOWN FULL TEXT OVERRIDE — ADDED */
-@media (max-width: 768px) {
-  details[open] p,
-  details[open] div,
-  details[open] span {
-    display: block !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: unset !important;
-    max-height: none !important;
-    -webkit-line-clamp: unset !important;
-  }
+/* ✅ DROPDOWN FULL-TEXT FIX (DESKTOP + MOBILE) */
+details[open] * {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  max-height: none !important;
+  -webkit-line-clamp: unset !important;
 }
 </style>
 </head>
@@ -133,20 +128,21 @@ textarea, input {
 <p id="why"></p>
 </section>
 
-<section>
-<h2>Donate</h2>
-<p id="donate-text"></p>
-<a id="donate-button" href="#" target="_blank">
-  <button class="button">Donate Now</button>
-</a>
-</section>
-
+<!-- ✅ MOVED QUESTIONS SECTION (no changes inside it) -->
 <section>
 <h2>Have questions? Let us know!</h2>
 <input id="q-name" placeholder="Name (Optional)">
 <input id="q-email" placeholder="Your email">
 <textarea id="q-text" placeholder="Your question"></textarea>
 <button class="button" onclick="submitQuestion()">Send Question</button>
+</section>
+
+<section>
+<h2>Donate</h2>
+<p id="donate-text"></p>
+<a id="donate-button" href="#" target="_blank">
+  <button class="button">Donate Now</button>
+</a>
 </section>
 
 <!-- BOTTOM IMAGES -->
