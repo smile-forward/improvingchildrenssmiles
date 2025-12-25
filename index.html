@@ -73,12 +73,15 @@ textarea, input, select {
 }
 
 .dropdown-content {
-  display: none;
-  margin-top: 15px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, padding 0.3s ease;
+  margin-top: 0;
 }
 
 .dropdown.open .dropdown-content {
-  display: block;
+  padding-top: 15px;
+  max-height: 1000px;
 }
 
 /* IMAGE GROUPS */
@@ -113,6 +116,19 @@ textarea, input, select {
   border-radius: 10px;
   padding: 30px;
   margin-top: 20px;
+}
+
+/* QUESTIONS ADMIN */
+.question-card {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #f7f7f7;
+}
+
+.question-card p {
+  margin: 4px 0;
 }
 
 /* FOOTER */
@@ -248,6 +264,9 @@ accountability, and real measurable impact.
 <label>Donate Button Link</label>
 <input id="donate-link-input">
 
+<h4>Submitted Questions</h4>
+<div id="admin-questions"></div>
+
 <button class="button" onclick="saveChanges()">Save Changes</button>
 </section>
 </div>
@@ -298,6 +317,8 @@ document.getElementById("logo").style.display="block";
 
 document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
 document.getElementById("donate-button").href=localStorage.getItem("donateLink")||"#";
+
+loadAdminQuestions();
 };
 
 // ADMIN FUNCTIONS
@@ -308,6 +329,7 @@ document.getElementById("admin-area").classList.remove("hidden");
 document.getElementById(id).contentEditable=true;
 document.getElementById(id).classList.add("editable");
 });
+loadAdminQuestions();
 }
 }
 
@@ -331,11 +353,29 @@ viewed:false
 });
 localStorage.setItem("questions",JSON.stringify(qs));
 alert("Question sent!");
+loadAdminQuestions();
+}
+
+// DISPLAY QUESTIONS LIKE GOOGLE FORM
+function loadAdminQuestions(){
+const qs=JSON.parse(localStorage.getItem("questions")||"[]");
+const container=document.getElementById("admin-questions");
+container.innerHTML="";
+qs.forEach((q,i)=>{
+let div=document.createElement("div");
+div.className="question-card";
+div.innerHTML=`<p><strong>Submission ${i+1}</strong></p>
+<p><strong>Name:</strong> ${q.name}</p>
+<p><strong>Email:</strong> ${q.email}</p>
+<p><strong>Question:</strong> ${q.question}</p>`;
+container.appendChild(div);
+});
 }
 
 // DROPDOWN
 function toggleDropdown(el){
-el.parentElement.classList.toggle("open");
+let parent=el.parentElement;
+parent.classList.toggle("open");
 }
 
 // FORMAT & FONT
@@ -367,3 +407,4 @@ r.readAsDataURL(f);
 
 </body>
 </html>
+
