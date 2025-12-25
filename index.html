@@ -11,13 +11,11 @@ body {
   margin: 0;
   background: #f9f9f9;
   color: #333;
-  font-size: 18px;
-  line-height: 1.9;
 }
 
 header {
   background: #cfe2ff;
-  padding: 40px;
+  padding: 30px;
 }
 
 .header-wrap {
@@ -37,82 +35,18 @@ header {
 section {
   max-width: 900px;
   margin: auto;
-  padding: 25px;
+  padding: 18px;
 }
 
 .button {
   background: #5c86cb;
   color: white;
-  padding: 14px 26px;
+  padding: 12px 22px;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
 }
 
-.hidden { display: none; }
-
-textarea, input, select {
-  width: 100%;
-  margin-top: 8px;
-  padding: 10px;
-  font-family: "Times New Roman", serif;
-  font-size: 16px;
-}
-
-/* DROPDOWN */
-.dropdown-header {
-  cursor: pointer;
-  background: #eef3ff;
-  padding: 14px;
-  border-radius: 6px;
-  font-weight: bold;
-}
-
-.dropdown-content {
-  display: none;
-  margin-top: 15px;
-}
-
-.dropdown.open .dropdown-content {
-  display: block;
-}
-
-/* IMAGE GROUPS */
-.image-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.image-row img {
-  width: 30%;
-  max-width: 250px;
-  border-radius: 6px;
-}
-
-/* ADMIN EDITING */
-.editable {
-  border: 1px dashed #aaa;
-  padding: 10px;
-}
-
-.format-bar button {
-  margin-right: 6px;
-  padding: 6px 10px;
-  font-size: 14px;
-}
-
-/* DONOR TRUST SECTION */
-#trust-section {
-  background: #eef5ff;
-  border-radius: 10px;
-  padding: 30px;
-  margin-top: 20px;
-}
-
-/* FOOTER (REVERTED) */
 footer {
   background: #eee;
   text-align: center;
@@ -124,6 +58,52 @@ footer {
   font-size: 11px;
   color: #999;
   cursor: pointer;
+}
+
+textarea, input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  font-family: "Times New Roman", serif;
+}
+
+.hidden { display: none; }
+
+.image-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.image-row img {
+  width: 30%;
+  max-width: 250px;
+}
+
+.question-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.question-box.viewed {
+  background: #d4edda;
+}
+
+/* ✅ MOBILE DROPDOWN FULL TEXT OVERRIDE — ADDED */
+@media (max-width: 768px) {
+  details[open] p,
+  details[open] div,
+  details[open] span {
+    display: block !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    max-height: none !important;
+    -webkit-line-clamp: unset !important;
+  }
 }
 </style>
 </head>
@@ -140,20 +120,17 @@ footer {
   </div>
 </header>
 
-<section class="dropdown">
-  <div class="dropdown-header" onclick="toggleDropdown(this)">Our Mission</div>
-  <div class="dropdown-content">
-    <p id="mission"></p>
-    <div id="mission-images" class="image-row"></div>
-  </div>
+<!-- TOP IMAGES -->
+<div id="top-images" class="image-row"></div>
+
+<section>
+<h2>Our Mission</h2>
+<p id="mission"></p>
 </section>
 
-<section class="dropdown">
-  <div class="dropdown-header" onclick="toggleDropdown(this)">Why Oral Health Matters</div>
-  <div class="dropdown-content">
-    <p id="why"></p>
-    <div id="why-images" class="image-row"></div>
-  </div>
+<section>
+<h2>Why Oral Health Matters</h2>
+<p id="why"></p>
 </section>
 
 <section>
@@ -164,47 +141,30 @@ footer {
 </a>
 </section>
 
-<section id="trust-section">
-<h2>How Your Donation Makes a Difference</h2>
-<p>
-100% of funds raised go directly toward assembling and distributing oral health kits.
-Each kit includes a toothbrush, toothpaste, floss, and educational material.
-</p>
-<p>
-We partner with shelters and community organizations to ensure transparency,
-accountability, and real measurable impact.
-</p>
+<section>
+<h2>Have questions? Let us know!</h2>
+<input id="q-name" placeholder="Name (Optional)">
+<input id="q-email" placeholder="Your email">
+<textarea id="q-text" placeholder="Your question"></textarea>
+<button class="button" onclick="submitQuestion()">Send Question</button>
 </section>
 
+<!-- BOTTOM IMAGES -->
+<div id="bottom-images" class="image-row"></div>
+
+<!-- ADMIN PANEL -->
 <div id="admin-area" class="hidden">
 <section>
 <h3>Admin Panel</h3>
 
-<div class="format-bar">
-  <button onclick="format('bold')">Bold</button>
-  <button onclick="format('italic')">Italic</button>
-  <button onclick="format('underline')">Underline</button>
-</div>
+<label>Upload Top Images (max 3)</label>
+<input type="file" multiple accept="image/*" onchange="uploadImages(event,'top')">
 
-<label>Font Size</label>
-<select id="font-size" onchange="changeFontSize(this.value)">
-  <option value="16">Small</option>
-  <option value="18" selected>Medium</option>
-  <option value="20">Large</option>
-  <option value="22">Extra Large</option>
-</select>
+<label>Upload Bottom Images (max 3)</label>
+<input type="file" multiple accept="image/*" onchange="uploadImages(event,'bottom')">
 
-<label>Upload Logo</label>
-<input type="file" accept="image/*" onchange="uploadLogo(event)">
-
-<label>Mission Images (max 3)</label>
-<input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'mission')">
-
-<label>Why Images (max 3)</label>
-<input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'why')">
-
-<label>Donate Button Link</label>
-<input id="donate-link-input">
+<h4>Submitted Questions</h4>
+<div id="admin-questions"></div>
 
 <button class="button" onclick="saveChanges()">Save Changes</button>
 </section>
@@ -216,94 +176,108 @@ accountability, and real measurable impact.
 </footer>
 
 <script>
-const PASSWORD="admin123";
+const PASSWORD = "admin123";
 
-const DEFAULT_CONTENT={
-title:"Restoring Smiles with Smile Forward",
-orgText:"A student based Non-Profit organization based in Mississauga promoting oral health awareness",
-mission:"For many people, brushing their teeth is a simple daily habit...",
-why:"Oral health is far more than just a bright smile...",
-donate:"Your support plays a vital role..."
+/* DEFAULT TEXT */
+const DEFAULT_CONTENT = {
+  title: "Restoring Smiles with Smile Forward",
+  orgText: "A student based Non-Profit organization based in Mississauga promoting oral health awareness",
+  mission: "For many people, brushing their teeth is a simple daily habit—something done almost automatically, without a second thought. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often unavailable. Without preventative care, minor dental issues can develop into painful infections that affect overall health, confidence, and dignity. Our mission is to bridge this gap by providing essential oral health kits that empower individuals to care for themselves.",
+  why: "Oral health is far more than just a bright smile—it is a critical component of overall physical and mental health. Poor oral hygiene has been linked to heart disease, diabetes, respiratory infections, and chronic inflammation. Addressing oral health means addressing overall well-being, confidence, and quality of life.",
+  donate: "Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every donation directly contributes to providing essential oral hygiene supplies that help prevent pain, infection, and long-term complications. Together, we can create healthier smiles and stronger communities."
 };
 
-function loadText(id,key){
-document.getElementById(id).innerHTML=localStorage.getItem(key)||DEFAULT_CONTENT[key];
+/* SAFE LOAD */
+function loadText(id, key) {
+  const saved = localStorage.getItem(key);
+  document.getElementById(id).innerText = saved || DEFAULT_CONTENT[key];
 }
 
-function loadImages(key,container){
-(JSON.parse(localStorage.getItem(key)||"[]")).forEach(src=>{
-let img=document.createElement("img");
-img.src=src;
-container.appendChild(img);
-});
+function loadImages(position) {
+  const data = JSON.parse(localStorage.getItem(position+"Images") || "[]");
+  const container = document.getElementById(position+"-images");
+  container.innerHTML = "";
+  data.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    container.appendChild(img);
+  });
 }
 
-window.onload=()=>{
-loadText("title","title");
-loadText("org-text","orgText");
-loadText("mission","mission");
-loadText("why","why");
-loadText("donate-text","donate");
+window.onload = () => {
+  loadText("title","title");
+  loadText("org-text","orgText");
+  loadText("mission","mission");
+  loadText("why","why");
+  loadText("donate-text","donate");
 
-loadImages("missionImgs",document.getElementById("mission-images"));
-loadImages("whyImgs",document.getElementById("why-images"));
+  loadImages("top");
+  loadImages("bottom");
 
-let logo=localStorage.getItem("logo");
-if(logo){
-document.getElementById("logo").src=logo;
-document.getElementById("logo").style.display="block";
-}
+  const logo = localStorage.getItem("logo");
+  if (logo) {
+    document.getElementById("logo").src = logo;
+    document.getElementById("logo").style.display = "block";
+  }
 
-document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
-document.getElementById("donate-button").href=localStorage.getItem("donateLink")||"#";
+  const link = localStorage.getItem("donateLink");
+  if (link) document.getElementById("donate-button").href = link;
 };
 
-function adminLogin(){
-if(prompt("Password")===PASSWORD){
-document.getElementById("admin-area").classList.remove("hidden");
-["title","org-text","mission","why","donate-text"].forEach(id=>{
-document.getElementById(id).contentEditable=true;
-document.getElementById(id).classList.add("editable");
-});
-}
+/* ADMIN */
+function adminLogin() {
+  if (prompt("Password") === PASSWORD) {
+    document.getElementById("admin-area").classList.remove("hidden");
+    loadAdminQuestions();
+  }
 }
 
-function saveChanges(){
-["title","org-text","mission","why","donate-text"].forEach(id=>{
-localStorage.setItem(id,document.getElementById(id).innerHTML);
-document.getElementById(id).contentEditable=false;
-});
-localStorage.setItem("donateLink",document.getElementById("donate-link-input").value);
-location.reload();
+function uploadImages(e, position) {
+  const files = Array.from(e.target.files).slice(0,3);
+  const stored = [];
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      stored.push(reader.result);
+      localStorage.setItem(position+"Images", JSON.stringify(stored));
+      loadImages(position);
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
-function toggleDropdown(el){el.parentElement.classList.toggle("open");}
-function format(cmd){document.execCommand(cmd,false,null);}
-function changeFontSize(v){
-document.body.style.fontSize=v+"px";
-localStorage.setItem("fontSize",v);
+/* QUESTIONS */
+function submitQuestion() {
+  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
+  qs.push({
+    name: document.getElementById("q-name").value || "Anonymous",
+    email: document.getElementById("q-email").value,
+    question: document.getElementById("q-text").value,
+    viewed: false
+  });
+  localStorage.setItem("questions", JSON.stringify(qs));
+  alert("Question sent!");
 }
 
-function uploadLogo(e){
-let r=new FileReader();
-r.onload=()=>{
-localStorage.setItem("logo",r.result);
-document.getElementById("logo").src=r.result;
-document.getElementById("logo").style.display="block";
-};
-r.readAsDataURL(e.target.files[0]);
+function loadAdminQuestions() {
+  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
+  const box = document.getElementById("admin-questions");
+  box.innerHTML = "";
+  qs.forEach((q,i)=>{
+    const div = document.createElement("div");
+    div.className = "question-box" + (q.viewed ? " viewed":"");
+    div.innerText = `${q.name}: ${q.question}`;
+    div.onclick = () => {
+      q.viewed = true;
+      localStorage.setItem("questions", JSON.stringify(qs));
+      loadAdminQuestions();
+    };
+    box.appendChild(div);
+  });
 }
 
-function uploadSectionImages(e,key){
-let arr=[];
-Array.from(e.target.files).slice(0,3).forEach(f=>{
-let r=new FileReader();
-r.onload=()=>{
-arr.push(r.result);
-localStorage.setItem(key+"Imgs",JSON.stringify(arr));
-};
-r.readAsDataURL(f);
-});
+function saveChanges() {
+  location.reload();
 }
 </script>
 
