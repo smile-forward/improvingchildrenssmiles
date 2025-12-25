@@ -111,6 +111,20 @@ textarea, input, select {
   padding: 30px;
   margin-top: 20px;
 }
+
+/* FOOTER (REVERTED) */
+footer {
+  background: #eee;
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+}
+
+#admin-link {
+  font-size: 11px;
+  color: #999;
+  cursor: pointer;
+}
 </style>
 </head>
 
@@ -154,12 +168,11 @@ textarea, input, select {
 <h2>How Your Donation Makes a Difference</h2>
 <p>
 100% of funds raised go directly toward assembling and distributing oral health kits.
-Each kit includes a toothbrush, toothpaste, floss, and educational material, helping
-prevent infections, reduce emergency care visits, and restore dignity.
+Each kit includes a toothbrush, toothpaste, floss, and educational material.
 </p>
 <p>
-Transparency and accountability are core to our mission. We regularly document outreach
-events and partner with local shelters to ensure donations create measurable impact.
+We partner with shelters and community organizations to ensure transparency,
+accountability, and real measurable impact.
 </p>
 </section>
 
@@ -236,7 +249,10 @@ loadImages("missionImgs",document.getElementById("mission-images"));
 loadImages("whyImgs",document.getElementById("why-images"));
 
 let logo=localStorage.getItem("logo");
-if(logo){document.getElementById("logo").src=logo;document.getElementById("logo").style.display="block";}
+if(logo){
+document.getElementById("logo").src=logo;
+document.getElementById("logo").style.display="block";
+}
 
 document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
 document.getElementById("donate-button").href=localStorage.getItem("donateLink")||"#";
@@ -263,11 +279,18 @@ location.reload();
 
 function toggleDropdown(el){el.parentElement.classList.toggle("open");}
 function format(cmd){document.execCommand(cmd,false,null);}
-function changeFontSize(v){document.body.style.fontSize=v+"px";localStorage.setItem("fontSize",v);}
+function changeFontSize(v){
+document.body.style.fontSize=v+"px";
+localStorage.setItem("fontSize",v);
+}
 
 function uploadLogo(e){
 let r=new FileReader();
-r.onload=()=>{localStorage.setItem("logo",r.result);document.getElementById("logo").src=r.result;document.getElementById("logo").style.display="block";}
+r.onload=()=>{
+localStorage.setItem("logo",r.result);
+document.getElementById("logo").src=r.result;
+document.getElementById("logo").style.display="block";
+};
 r.readAsDataURL(e.target.files[0]);
 }
 
@@ -275,7 +298,10 @@ function uploadSectionImages(e,key){
 let arr=[];
 Array.from(e.target.files).slice(0,3).forEach(f=>{
 let r=new FileReader();
-r.onload=()=>{arr.push(r.result);localStorage.setItem(key+"Imgs",JSON.stringify(arr));}
+r.onload=()=>{
+arr.push(r.result);
+localStorage.setItem(key+"Imgs",JSON.stringify(arr));
+};
 r.readAsDataURL(f);
 });
 }
