@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-/* BASE STYLES */
 body {
   font-family: "Times New Roman", serif;
   margin: 0;
@@ -73,15 +72,9 @@ textarea, input, select {
 }
 
 .dropdown-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease, padding 0.3s ease;
-  margin-top: 0;
-}
-
-.dropdown.open .dropdown-content {
-  padding-top: 15px;
-  max-height: 1000px;
+  display: none;
+  overflow: visible !important; /* Force all content to be visible */
+  padding-top: 0;
 }
 
 /* IMAGE GROUPS */
@@ -208,7 +201,7 @@ footer {
 <section>
 <h2>Donate</h2>
 <p id="donate-text"></p>
-<a id="donate-button" href="#" target="_blank">
+<a id="donate-button" href="https://gofund.me/9b7a69e30" target="_blank">
   <button class="button">Donate Now</button>
 </a>
 </section>
@@ -225,7 +218,6 @@ accountability, and real measurable impact.
 </p>
 </section>
 
-<!-- QUESTIONS SECTION -->
 <section>
 <h2>Have questions? Let us know!</h2>
 <input id="q-name" placeholder="Name (Optional)">
@@ -260,9 +252,6 @@ accountability, and real measurable impact.
 
 <label>Why Images (max 3)</label>
 <input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'why')">
-
-<label>Donate Button Link</label>
-<input id="donate-link-input">
 
 <h4>Submitted Questions</h4>
 <div id="admin-questions"></div>
@@ -316,7 +305,9 @@ document.getElementById("logo").style.display="block";
 }
 
 document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
-document.getElementById("donate-button").href=localStorage.getItem("donateLink")||"#";
+
+// Force donate button to GoFundMe link on all devices
+document.getElementById("donate-button").href = "https://gofund.me/9b7a69e30";
 
 loadAdminQuestions();
 };
@@ -338,7 +329,7 @@ function saveChanges(){
 localStorage.setItem(id,document.getElementById(id).innerHTML);
 document.getElementById(id).contentEditable=false;
 });
-localStorage.setItem("donateLink",document.getElementById("donate-link-input").value);
+localStorage.setItem("donateLink","https://gofund.me/9b7a69e30"); // permanent
 location.reload();
 }
 
@@ -407,4 +398,5 @@ r.readAsDataURL(f);
 
 </body>
 </html>
+
 
