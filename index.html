@@ -72,9 +72,9 @@ textarea, input, select {
 }
 
 .dropdown-content {
-  display: none;
-  overflow: visible !important; /* Force all content to be visible */
-  padding-top: 0;
+  height: 0;
+  overflow: hidden;
+  transition: height 0.4s ease, padding 0.4s ease;
 }
 
 /* IMAGE GROUPS */
@@ -267,7 +267,6 @@ accountability, and real measurable impact.
 
 <script>
 const PASSWORD="admin123";
-
 const DEFAULT_CONTENT={
 title:"Restoring Smiles with Smile Forward",
 orgText:"A student based Non-Profit organization based in Mississauga promoting oral health awareness",
@@ -305,14 +304,12 @@ document.getElementById("logo").style.display="block";
 }
 
 document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
-
-// Force donate button to GoFundMe link on all devices
 document.getElementById("donate-button").href = "https://gofund.me/9b7a69e30";
 
 loadAdminQuestions();
 };
 
-// ADMIN FUNCTIONS
+// ADMIN
 function adminLogin(){
 if(prompt("Password")===PASSWORD){
 document.getElementById("admin-area").classList.remove("hidden");
@@ -329,7 +326,7 @@ function saveChanges(){
 localStorage.setItem(id,document.getElementById(id).innerHTML);
 document.getElementById(id).contentEditable=false;
 });
-localStorage.setItem("donateLink","https://gofund.me/9b7a69e30"); // permanent
+localStorage.setItem("donateLink","https://gofund.me/9b7a69e30");
 location.reload();
 }
 
@@ -347,7 +344,6 @@ alert("Question sent!");
 loadAdminQuestions();
 }
 
-// DISPLAY QUESTIONS LIKE GOOGLE FORM
 function loadAdminQuestions(){
 const qs=JSON.parse(localStorage.getItem("questions")||"[]");
 const container=document.getElementById("admin-questions");
@@ -365,8 +361,14 @@ container.appendChild(div);
 
 // DROPDOWN
 function toggleDropdown(el){
-let parent=el.parentElement;
-parent.classList.toggle("open");
+let content=el.nextElementSibling;
+if(content.style.height && content.style.height!="0px"){
+content.style.height="0px";
+content.style.paddingTop="0px";
+}else{
+content.style.height=content.scrollHeight+"px";
+content.style.paddingTop="15px";
+}
 }
 
 // FORMAT & FONT
