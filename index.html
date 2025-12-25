@@ -11,11 +11,13 @@ body {
   margin: 0;
   background: #f9f9f9;
   color: #333;
+  font-size: 18px;
+  line-height: 1.8;
 }
 
 header {
   background: #cfe2ff;
-  padding: 30px;
+  padding: 40px;
 }
 
 .header-wrap {
@@ -35,23 +37,24 @@ header {
 section {
   max-width: 900px;
   margin: auto;
-  padding: 18px;
+  padding: 25px;
 }
 
 .button {
   background: #5c86cb;
   color: white;
-  padding: 12px 22px;
+  padding: 14px 26px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 16px;
 }
 
 footer {
   background: #eee;
   text-align: center;
-  padding: 10px;
-  font-size: 12px;
+  padding: 12px;
+  font-size: 13px;
 }
 
 #admin-link {
@@ -63,12 +66,32 @@ footer {
 textarea, input {
   width: 100%;
   margin-top: 8px;
-  padding: 8px;
+  padding: 10px;
   font-family: "Times New Roman", serif;
+  font-size: 16px;
 }
 
 .hidden { display: none; }
 
+/* DROPDOWN SECTIONS */
+.dropdown-header {
+  cursor: pointer;
+  background: #eef3ff;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.dropdown-content {
+  display: none;
+  margin-top: 12px;
+}
+
+.dropdown.open .dropdown-content {
+  display: block;
+}
+
+/* IMAGE ROW */
 .image-row {
   display: flex;
   gap: 10px;
@@ -81,6 +104,7 @@ textarea, input {
   max-width: 250px;
 }
 
+/* QUESTIONS */
 .question-box {
   border: 1px solid #ccc;
   padding: 10px;
@@ -92,10 +116,27 @@ textarea, input {
   background: #d4edda;
 }
 
-.editable-text {
-  border: 1px dashed #999;
-  padding: 5px;
-  min-height: 20px;
+/* ADMIN TEXT EDITING */
+.editable {
+  border: 1px dashed #aaa;
+  padding: 10px;
+  min-height: 60px;
+}
+
+/* FORMAT TOOLBAR */
+.format-bar button {
+  margin-right: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+/* INTERACTIVE COUNTER */
+#impact-counter {
+  text-align: center;
+  background: #eaf1ff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
 }
 </style>
 </head>
@@ -112,17 +153,20 @@ textarea, input {
   </div>
 </header>
 
-<!-- TOP IMAGES -->
 <div id="top-images" class="image-row"></div>
 
-<section>
-<h2>Our Mission</h2>
-<p id="mission"></p>
+<section class="dropdown">
+  <div class="dropdown-header" onclick="toggleDropdown(this)">Our Mission</div>
+  <div class="dropdown-content">
+    <p id="mission"></p>
+  </div>
 </section>
 
-<section>
-<h2>Why Oral Health Matters</h2>
-<p id="why"></p>
+<section class="dropdown">
+  <div class="dropdown-header" onclick="toggleDropdown(this)">Why Oral Health Matters</div>
+  <div class="dropdown-content">
+    <p id="why"></p>
+  </div>
 </section>
 
 <section>
@@ -133,6 +177,12 @@ textarea, input {
 </a>
 </section>
 
+<section id="impact-counter">
+  <h2>Smiles Impacted</h2>
+  <p id="count">0</p>
+  <button class="button" onclick="increaseCount()">Add a Smile</button>
+</section>
+
 <section>
 <h2>Have questions? Let us know!</h2>
 <input id="q-name" placeholder="Name (Optional)">
@@ -141,26 +191,20 @@ textarea, input {
 <button class="button" onclick="submitQuestion()">Send Question</button>
 </section>
 
-<!-- BOTTOM IMAGES -->
 <div id="bottom-images" class="image-row"></div>
 
-<!-- ADMIN PANEL -->
 <div id="admin-area" class="hidden">
 <section>
 <h3>Admin Panel</h3>
 
-<label>Upload Top Images (max 3)</label>
-<input type="file" multiple accept="image/*" onchange="uploadImages(event,'top')">
+<div class="format-bar">
+  <button onclick="format('bold')">Bold</button>
+  <button onclick="format('italic')">Italic</button>
+  <button onclick="format('underline')">Underline</button>
+</div>
 
-<label>Upload Bottom Images (max 3)</label>
-<input type="file" multiple accept="image/*" onchange="uploadImages(event,'bottom')">
-
-<h4>Submitted Questions</h4>
-<div id="admin-questions"></div>
-
-<!-- DONATE LINK SECTION -->
-<h4>Donate Button Link</h4>
-<input id="donate-link-input" placeholder="Enter Donate URL">
+<label>Donate Button Link</label>
+<input id="donate-link-input">
 
 <button class="button" onclick="saveChanges()">Save Changes</button>
 </section>
@@ -174,152 +218,65 @@ textarea, input {
 <script>
 const PASSWORD = "admin123";
 
-/* DEFAULT TEXT */
 const DEFAULT_CONTENT = {
   title: "Restoring Smiles with Smile Forward",
   orgText: "A student based Non-Profit organization based in Mississauga promoting oral health awareness",
-  mission: "For many people, brushing their teeth is a simple daily habit—something done almost automatically, without a second thought. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often unavailable. Without preventative care, minor dental issues can develop into painful infections that affect overall health, confidence, and dignity. Our mission is to bridge this gap by providing essential oral health kits that empower individuals to care for themselves.",
-  why: "Oral health is far more than just a bright smile—it is a critical component of overall physical and mental health. Poor oral hygiene has been linked to heart disease, diabetes, respiratory infections, and chronic inflammation. Addressing oral health means addressing overall well-being, confidence, and quality of life.",
-  donate: "Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every donation directly contributes to providing essential oral hygiene supplies that help prevent pain, infection, and long-term complications. Together, we can create healthier smiles and stronger communities."
+  mission: "For many people, brushing their teeth is a simple daily habit...",
+  why: "Oral health is far more than just a bright smile...",
+  donate: "Your support plays a vital role..."
 };
 
-/* SAFE LOAD */
-function loadText(id, key) {
-  const saved = localStorage.getItem(key);
-  document.getElementById(id).innerText = saved || DEFAULT_CONTENT[key];
+function loadText(id,key){
+  document.getElementById(id).innerHTML = localStorage.getItem(key) || DEFAULT_CONTENT[key];
 }
 
-function loadImages(position) {
-  const data = JSON.parse(localStorage.getItem(position+"Images") || "[]");
-  const container = document.getElementById(position+"-images");
-  container.innerHTML = "";
-  data.forEach(src => {
-    const img = document.createElement("img");
-    img.src = src;
-    container.appendChild(img);
-  });
-}
-
-window.onload = () => {
+window.onload=()=>{
   loadText("title","title");
   loadText("org-text","orgText");
   loadText("mission","mission");
   loadText("why","why");
   loadText("donate-text","donate");
-
-  loadImages("top");
-  loadImages("bottom");
-
-  const logo = localStorage.getItem("logo");
-  if (logo) {
-    document.getElementById("logo").src = logo;
-    document.getElementById("logo").style.display = "block";
-  }
-
-  const link = localStorage.getItem("donateLink");
-  if (link) {
-    document.getElementById("donate-button").href = link;
-    document.getElementById("donate-link-input").value = link; // pre-fill input
-  }
+  document.getElementById("donate-button").href = localStorage.getItem("donateLink") || "#";
 };
 
-/* ADMIN */
-function adminLogin() {
-  if (prompt("Password") === PASSWORD) {
+function adminLogin(){
+  if(prompt("Password")===PASSWORD){
     document.getElementById("admin-area").classList.remove("hidden");
-    makeTextEditable();
-    loadAdminQuestions();
+    ["title","org-text","mission","why","donate-text"].forEach(id=>{
+      const el=document.getElementById(id);
+      el.contentEditable=true;
+      el.classList.add("editable");
+    });
   }
 }
 
-function makeTextEditable() {
-  const editableIds = ["title","org-text","mission","why","donate-text"];
-  editableIds.forEach(id => {
-    const el = document.getElementById(id);
-    const text = el.innerText;
-    el.innerHTML = `<textarea class="editable-text" id="${id}-input">${text}</textarea>`;
+function saveChanges(){
+  ["title","org-text","mission","why","donate-text"].forEach(id=>{
+    localStorage.setItem(id,document.getElementById(id).innerHTML);
+    document.getElementById(id).contentEditable=false;
   });
-}
-
-function uploadImages(e, position) {
-  const files = Array.from(e.target.files).slice(0,3);
-  const stored = [];
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      stored.push(reader.result);
-      localStorage.setItem(position+"Images", JSON.stringify(stored));
-      loadImages(position);
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-/* QUESTIONS */
-function submitQuestion() {
-  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
-  qs.push({
-    name: document.getElementById("q-name").value || "Anonymous",
-    email: document.getElementById("q-email").value,
-    question: document.getElementById("q-text").value,
-    viewed: false
-  });
-  localStorage.setItem("questions", JSON.stringify(qs));
-  alert("Question sent!");
-}
-
-function loadAdminQuestions() {
-  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
-  const box = document.getElementById("admin-questions");
-  box.innerHTML = "";
-  qs.forEach((q,i)=>{
-    const div = document.createElement("div");
-    div.className = "question-box" + (q.viewed ? " viewed":"");
-    div.innerText = `${q.name}: ${q.question}`;
-    div.onclick = () => {
-      q.viewed = true;
-      localStorage.setItem("questions", JSON.stringify(qs));
-      loadAdminQuestions();
-    };
-    box.appendChild(div);
-  });
-}
-
-/* SAVE CHANGES */
-function saveChanges() {
-  const editableIds = ["title","org-text","mission","why","donate-text"];
-  editableIds.forEach(id => {
-    const input = document.getElementById(id+"-input");
-    const value = input ? input.value.trim() : "";
-    if(value) {
-      localStorage.setItem(id, value);
-      document.getElementById(id).innerText = value;
-    } else {
-      // revert to previous/default if empty
-      document.getElementById(id).innerText = localStorage.getItem(id) || DEFAULT_CONTENT[id];
-    }
-  });
-
-  // save donate link
-  const donateLink = document.getElementById("donate-link-input").value;
-  if(donateLink) {
-    localStorage.setItem("donateLink", donateLink);
-    document.getElementById("donate-button").href = donateLink;
+  const link=document.getElementById("donate-link-input").value;
+  if(link){
+    localStorage.setItem("donateLink",link);
+    document.getElementById("donate-button").href=link;
   }
-
-  // remove textareas after saving
-  editableIds.forEach(id => {
-    const el = document.getElementById(id);
-    if(el.querySelector("textarea")) {
-      const text = el.querySelector("textarea").value;
-      el.innerText = text || localStorage.getItem(id) || DEFAULT_CONTENT[id];
-    }
-  });
-
   location.reload();
+}
+
+function format(cmd){document.execCommand(cmd,false,null);}
+
+function toggleDropdown(el){
+  el.parentElement.classList.toggle("open");
+}
+
+let count=0;
+function increaseCount(){
+  count++;
+  document.getElementById("count").innerText=count;
 }
 </script>
 
 </body>
 </html>
+
 
