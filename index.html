@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-/* BASE STYLES */
 body {
   font-family: "Times New Roman", serif;
   margin: 0;
@@ -64,10 +63,6 @@ textarea, input, select {
 }
 
 /* DROPDOWN */
-.dropdown {
-  margin-bottom: 20px;
-}
-
 .dropdown-header {
   cursor: pointer;
   background: #eef3ff;
@@ -77,8 +72,9 @@ textarea, input, select {
 }
 
 .dropdown-content {
-  display: none; /* Initially hidden */
-  padding-top: 15px;
+  height: 0;
+  overflow: hidden;
+  transition: height 0.4s ease, padding 0.4s ease;
 }
 
 /* IMAGE GROUPS */
@@ -279,127 +275,128 @@ why:"Oral health is far more than just a bright smile...",
 donate:"Your support plays a vital role..."
 };
 
-// Load text and images
 function loadText(id,key){
-  document.getElementById(id).innerHTML=localStorage.getItem(key)||DEFAULT_CONTENT[key];
+document.getElementById(id).innerHTML=localStorage.getItem(key)||DEFAULT_CONTENT[key];
 }
+
 function loadImages(key,container){
-  (JSON.parse(localStorage.getItem(key)||"[]")).forEach(src=>{
-    let img=document.createElement("img");
-    img.src=src;
-    container.appendChild(img);
-  });
+(JSON.parse(localStorage.getItem(key)||"[]")).forEach(src=>{
+let img=document.createElement("img");
+img.src=src;
+container.appendChild(img);
+});
 }
 
 window.onload=()=>{
-  loadText("title","title");
-  loadText("org-text","orgText");
-  loadText("mission","mission");
-  loadText("why","why");
-  loadText("donate-text","donate");
+loadText("title","title");
+loadText("org-text","orgText");
+loadText("mission","mission");
+loadText("why","why");
+loadText("donate-text","donate");
 
-  loadImages("missionImgs",document.getElementById("mission-images"));
-  loadImages("whyImgs",document.getElementById("why-images"));
+loadImages("missionImgs",document.getElementById("mission-images"));
+loadImages("whyImgs",document.getElementById("why-images"));
 
-  let logo=localStorage.getItem("logo");
-  if(logo){
-    document.getElementById("logo").src=logo;
-    document.getElementById("logo").style.display="block";
-  }
+let logo=localStorage.getItem("logo");
+if(logo){
+document.getElementById("logo").src=logo;
+document.getElementById("logo").style.display="block";
+}
 
-  document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
+document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
+document.getElementById("donate-button").href = "https://gofund.me/9b7a69e30";
 
-  // Guarantee donate button redirect
-  document.getElementById("donate-button").href = "https://gofund.me/9b7a69e30";
-
-  loadAdminQuestions();
+loadAdminQuestions();
 };
 
-// Admin functions
+// ADMIN
 function adminLogin(){
-  if(prompt("Password")===PASSWORD){
-    document.getElementById("admin-area").classList.remove("hidden");
-    ["title","org-text","mission","why","donate-text"].forEach(id=>{
-      document.getElementById(id).contentEditable=true;
-      document.getElementById(id).classList.add("editable");
-    });
-    loadAdminQuestions();
-  }
+if(prompt("Password")===PASSWORD){
+document.getElementById("admin-area").classList.remove("hidden");
+["title","org-text","mission","why","donate-text"].forEach(id=>{
+document.getElementById(id).contentEditable=true;
+document.getElementById(id).classList.add("editable");
+});
+loadAdminQuestions();
 }
+}
+
 function saveChanges(){
-  ["title","org-text","mission","why","donate-text"].forEach(id=>{
-    localStorage.setItem(id,document.getElementById(id).innerHTML);
-    document.getElementById(id).contentEditable=false;
-  });
-  localStorage.setItem("donateLink","https://gofund.me/9b7a69e30");
-  location.reload();
+["title","org-text","mission","why","donate-text"].forEach(id=>{
+localStorage.setItem(id,document.getElementById(id).innerHTML);
+document.getElementById(id).contentEditable=false;
+});
+localStorage.setItem("donateLink","https://gofund.me/9b7a69e30");
+location.reload();
 }
 
-// Questions
+// QUESTIONS
 function submitQuestion(){
-  const qs=JSON.parse(localStorage.getItem("questions")||"[]");
-  qs.push({
-    name:document.getElementById("q-name").value||"Anonymous",
-    email:document.getElementById("q-email").value,
-    question:document.getElementById("q-text").value,
-    viewed:false
-  });
-  localStorage.setItem("questions",JSON.stringify(qs));
-  alert("Question sent!");
-  loadAdminQuestions();
+const qs=JSON.parse(localStorage.getItem("questions")||"[]");
+qs.push({
+name:document.getElementById("q-name").value||"Anonymous",
+email:document.getElementById("q-email").value,
+question:document.getElementById("q-text").value,
+viewed:false
+});
+localStorage.setItem("questions",JSON.stringify(qs));
+alert("Question sent!");
+loadAdminQuestions();
 }
+
 function loadAdminQuestions(){
-  const qs=JSON.parse(localStorage.getItem("questions")||"[]");
-  const container=document.getElementById("admin-questions");
-  container.innerHTML="";
-  qs.forEach((q,i)=>{
-    let div=document.createElement("div");
-    div.className="question-card";
-    div.innerHTML=`<p><strong>Submission ${i+1}</strong></p>
-    <p><strong>Name:</strong> ${q.name}</p>
-    <p><strong>Email:</strong> ${q.email}</p>
-    <p><strong>Question:</strong> ${q.question}</p>`;
-    container.appendChild(div);
-  });
+const qs=JSON.parse(localStorage.getItem("questions")||"[]");
+const container=document.getElementById("admin-questions");
+container.innerHTML="";
+qs.forEach((q,i)=>{
+let div=document.createElement("div");
+div.className="question-card";
+div.innerHTML=`<p><strong>Submission ${i+1}</strong></p>
+<p><strong>Name:</strong> ${q.name}</p>
+<p><strong>Email:</strong> ${q.email}</p>
+<p><strong>Question:</strong> ${q.question}</p>`;
+container.appendChild(div);
+});
 }
 
-// Dropdown toggle
+// DROPDOWN
 function toggleDropdown(el){
-  let content = el.nextElementSibling;
-  if(content.style.display === "block"){
-    content.style.display = "none";
-  } else {
-    content.style.display = "block"; // Always fully visible
-  }
+let content=el.nextElementSibling;
+if(content.style.height && content.style.height!="0px"){
+content.style.height="0px";
+content.style.paddingTop="0px";
+}else{
+content.style.height=content.scrollHeight+"px";
+content.style.paddingTop="15px";
+}
 }
 
-// Format & font
+// FORMAT & FONT
 function format(cmd){document.execCommand(cmd,false,null);}
 function changeFontSize(v){document.body.style.fontSize=v+"px";localStorage.setItem("fontSize",v);}
 
-// Image uploads
+// IMAGE UPLOAD
 function uploadLogo(e){
-  let r=new FileReader();
-  r.onload=()=>{
-    localStorage.setItem("logo",r.result);
-    document.getElementById("logo").src=r.result;
-    document.getElementById("logo").style.display="block";
-  };
-  r.readAsDataURL(e.target.files[0]);
+let r=new FileReader();
+r.onload=()=>{
+localStorage.setItem("logo",r.result);
+document.getElementById("logo").src=r.result;
+document.getElementById("logo").style.display="block";
+};
+r.readAsDataURL(e.target.files[0]);
 }
 function uploadSectionImages(e,key){
-  let arr=[];
-  Array.from(e.target.files).slice(0,3).forEach(f=>{
-    let r=new FileReader();
-    r.onload=()=>{
-      arr.push(r.result);
-      localStorage.setItem(key+"Imgs",JSON.stringify(arr));
-    };
-    r.readAsDataURL(f);
-  });
+let arr=[];
+Array.from(e.target.files).slice(0,3).forEach(f=>{
+let r=new FileReader();
+r.onload=()=>{
+arr.push(r.result);
+localStorage.setItem(key+"Imgs",JSON.stringify(arr));
+};
+r.readAsDataURL(f);
+});
 }
 </script>
 
 </body>
 </html>
-
