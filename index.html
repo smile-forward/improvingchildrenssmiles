@@ -12,7 +12,7 @@ body {
   background: #f9f9f9;
   color: #333;
   font-size: 18px;
-  line-height: 1.8;
+  line-height: 1.9;
 }
 
 header {
@@ -50,20 +50,9 @@ section {
   font-size: 16px;
 }
 
-footer {
-  background: #eee;
-  text-align: center;
-  padding: 12px;
-  font-size: 13px;
-}
+.hidden { display: none; }
 
-#admin-link {
-  font-size: 11px;
-  color: #999;
-  cursor: pointer;
-}
-
-textarea, input {
+textarea, input, select {
   width: 100%;
   margin-top: 8px;
   padding: 10px;
@@ -71,27 +60,25 @@ textarea, input {
   font-size: 16px;
 }
 
-.hidden { display: none; }
-
-/* DROPDOWN SECTIONS */
+/* DROPDOWN */
 .dropdown-header {
   cursor: pointer;
   background: #eef3ff;
-  padding: 12px;
+  padding: 14px;
   border-radius: 6px;
   font-weight: bold;
 }
 
 .dropdown-content {
   display: none;
-  margin-top: 12px;
+  margin-top: 15px;
 }
 
 .dropdown.open .dropdown-content {
   display: block;
 }
 
-/* IMAGE ROW */
+/* IMAGE GROUPS */
 .image-row {
   display: flex;
   gap: 10px;
@@ -102,40 +89,26 @@ textarea, input {
 .image-row img {
   width: 30%;
   max-width: 250px;
+  border-radius: 6px;
 }
 
-/* QUESTIONS */
-.question-box {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 8px;
-  cursor: pointer;
-}
-
-.question-box.viewed {
-  background: #d4edda;
-}
-
-/* ADMIN TEXT EDITING */
+/* ADMIN EDITING */
 .editable {
   border: 1px dashed #aaa;
   padding: 10px;
-  min-height: 60px;
 }
 
-/* FORMAT TOOLBAR */
 .format-bar button {
   margin-right: 6px;
   padding: 6px 10px;
   font-size: 14px;
 }
 
-/* INTERACTIVE COUNTER */
-#impact-counter {
-  text-align: center;
-  background: #eaf1ff;
-  padding: 20px;
-  border-radius: 8px;
+/* DONOR TRUST SECTION */
+#trust-section {
+  background: #eef5ff;
+  border-radius: 10px;
+  padding: 30px;
   margin-top: 20px;
 }
 </style>
@@ -153,12 +126,11 @@ textarea, input {
   </div>
 </header>
 
-<div id="top-images" class="image-row"></div>
-
 <section class="dropdown">
   <div class="dropdown-header" onclick="toggleDropdown(this)">Our Mission</div>
   <div class="dropdown-content">
     <p id="mission"></p>
+    <div id="mission-images" class="image-row"></div>
   </div>
 </section>
 
@@ -166,6 +138,7 @@ textarea, input {
   <div class="dropdown-header" onclick="toggleDropdown(this)">Why Oral Health Matters</div>
   <div class="dropdown-content">
     <p id="why"></p>
+    <div id="why-images" class="image-row"></div>
   </div>
 </section>
 
@@ -177,21 +150,18 @@ textarea, input {
 </a>
 </section>
 
-<section id="impact-counter">
-  <h2>Smiles Impacted</h2>
-  <p id="count">0</p>
-  <button class="button" onclick="increaseCount()">Add a Smile</button>
+<section id="trust-section">
+<h2>How Your Donation Makes a Difference</h2>
+<p>
+100% of funds raised go directly toward assembling and distributing oral health kits.
+Each kit includes a toothbrush, toothpaste, floss, and educational material, helping
+prevent infections, reduce emergency care visits, and restore dignity.
+</p>
+<p>
+Transparency and accountability are core to our mission. We regularly document outreach
+events and partner with local shelters to ensure donations create measurable impact.
+</p>
 </section>
-
-<section>
-<h2>Have questions? Let us know!</h2>
-<input id="q-name" placeholder="Name (Optional)">
-<input id="q-email" placeholder="Your email">
-<textarea id="q-text" placeholder="Your question"></textarea>
-<button class="button" onclick="submitQuestion()">Send Question</button>
-</section>
-
-<div id="bottom-images" class="image-row"></div>
 
 <div id="admin-area" class="hidden">
 <section>
@@ -202,6 +172,23 @@ textarea, input {
   <button onclick="format('italic')">Italic</button>
   <button onclick="format('underline')">Underline</button>
 </div>
+
+<label>Font Size</label>
+<select id="font-size" onchange="changeFontSize(this.value)">
+  <option value="16">Small</option>
+  <option value="18" selected>Medium</option>
+  <option value="20">Large</option>
+  <option value="22">Extra Large</option>
+</select>
+
+<label>Upload Logo</label>
+<input type="file" accept="image/*" onchange="uploadLogo(event)">
+
+<label>Mission Images (max 3)</label>
+<input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'mission')">
+
+<label>Why Images (max 3)</label>
+<input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'why')">
 
 <label>Donate Button Link</label>
 <input id="donate-link-input">
@@ -216,67 +203,84 @@ textarea, input {
 </footer>
 
 <script>
-const PASSWORD = "admin123";
+const PASSWORD="admin123";
 
-const DEFAULT_CONTENT = {
-  title: "Restoring Smiles with Smile Forward",
-  orgText: "A student based Non-Profit organization based in Mississauga promoting oral health awareness",
-  mission: "For many people, brushing their teeth is a simple daily habit...",
-  why: "Oral health is far more than just a bright smile...",
-  donate: "Your support plays a vital role..."
+const DEFAULT_CONTENT={
+title:"Restoring Smiles with Smile Forward",
+orgText:"A student based Non-Profit organization based in Mississauga promoting oral health awareness",
+mission:"For many people, brushing their teeth is a simple daily habit...",
+why:"Oral health is far more than just a bright smile...",
+donate:"Your support plays a vital role..."
 };
 
 function loadText(id,key){
-  document.getElementById(id).innerHTML = localStorage.getItem(key) || DEFAULT_CONTENT[key];
+document.getElementById(id).innerHTML=localStorage.getItem(key)||DEFAULT_CONTENT[key];
+}
+
+function loadImages(key,container){
+(JSON.parse(localStorage.getItem(key)||"[]")).forEach(src=>{
+let img=document.createElement("img");
+img.src=src;
+container.appendChild(img);
+});
 }
 
 window.onload=()=>{
-  loadText("title","title");
-  loadText("org-text","orgText");
-  loadText("mission","mission");
-  loadText("why","why");
-  loadText("donate-text","donate");
-  document.getElementById("donate-button").href = localStorage.getItem("donateLink") || "#";
+loadText("title","title");
+loadText("org-text","orgText");
+loadText("mission","mission");
+loadText("why","why");
+loadText("donate-text","donate");
+
+loadImages("missionImgs",document.getElementById("mission-images"));
+loadImages("whyImgs",document.getElementById("why-images"));
+
+let logo=localStorage.getItem("logo");
+if(logo){document.getElementById("logo").src=logo;document.getElementById("logo").style.display="block";}
+
+document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
+document.getElementById("donate-button").href=localStorage.getItem("donateLink")||"#";
 };
 
 function adminLogin(){
-  if(prompt("Password")===PASSWORD){
-    document.getElementById("admin-area").classList.remove("hidden");
-    ["title","org-text","mission","why","donate-text"].forEach(id=>{
-      const el=document.getElementById(id);
-      el.contentEditable=true;
-      el.classList.add("editable");
-    });
-  }
+if(prompt("Password")===PASSWORD){
+document.getElementById("admin-area").classList.remove("hidden");
+["title","org-text","mission","why","donate-text"].forEach(id=>{
+document.getElementById(id).contentEditable=true;
+document.getElementById(id).classList.add("editable");
+});
+}
 }
 
 function saveChanges(){
-  ["title","org-text","mission","why","donate-text"].forEach(id=>{
-    localStorage.setItem(id,document.getElementById(id).innerHTML);
-    document.getElementById(id).contentEditable=false;
-  });
-  const link=document.getElementById("donate-link-input").value;
-  if(link){
-    localStorage.setItem("donateLink",link);
-    document.getElementById("donate-button").href=link;
-  }
-  location.reload();
+["title","org-text","mission","why","donate-text"].forEach(id=>{
+localStorage.setItem(id,document.getElementById(id).innerHTML);
+document.getElementById(id).contentEditable=false;
+});
+localStorage.setItem("donateLink",document.getElementById("donate-link-input").value);
+location.reload();
 }
 
+function toggleDropdown(el){el.parentElement.classList.toggle("open");}
 function format(cmd){document.execCommand(cmd,false,null);}
+function changeFontSize(v){document.body.style.fontSize=v+"px";localStorage.setItem("fontSize",v);}
 
-function toggleDropdown(el){
-  el.parentElement.classList.toggle("open");
+function uploadLogo(e){
+let r=new FileReader();
+r.onload=()=>{localStorage.setItem("logo",r.result);document.getElementById("logo").src=r.result;document.getElementById("logo").style.display="block";}
+r.readAsDataURL(e.target.files[0]);
 }
 
-let count=0;
-function increaseCount(){
-  count++;
-  document.getElementById("count").innerText=count;
+function uploadSectionImages(e,key){
+let arr=[];
+Array.from(e.target.files).slice(0,3).forEach(f=>{
+let r=new FileReader();
+r.onload=()=>{arr.push(r.result);localStorage.setItem(key+"Imgs",JSON.stringify(arr));}
+r.readAsDataURL(f);
+});
 }
 </script>
 
 </body>
 </html>
-
 
