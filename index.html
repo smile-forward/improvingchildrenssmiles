@@ -2,103 +2,114 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Smile Forward</title>
+<title>Restoring Smiles</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body{
-  font-family:"Times New Roman",serif;
-  margin:0;
-  background:#f9f9f9;
-  color:#333;
-  line-height:1.9;
+body {
+  font-family: "Times New Roman", serif;
+  margin: 0;
+  background: #f9f9f9;
+  color: #333;
+  font-size: 18px;
+  line-height: 1.9;
 }
 
-header{
-  background:#cfe2ff;
-  padding:40px 20px;
-  text-align:center;
+header {
+  background: #cfe2ff;
+  padding: 40px;
 }
 
-section{
-  max-width:900px;
-  margin:auto;
-  padding:25px 20px;
+.header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  text-align: center;
 }
 
-/* ===== DROPDOWN ===== */
-.dropdown-title{
-  background:#eef3ff;
-  padding:15px;
-  border-radius:6px;
-  font-weight:bold;
-  cursor:pointer;
+#logo {
+  height: 90px;
+  display: none;
 }
 
-.dropdown-content{
-  max-height:0;
-  overflow:hidden;
-  transition:max-height 0.6s ease;
+section {
+  max-width: 900px;
+  margin: auto;
+  padding: 25px;
 }
 
-.dropdown-content.open{
-  max-height:6000px;
+.button {
+  background: #5c86cb;
+  color: white;
+  padding: 14px 26px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-.dropdown-inner{
-  padding-top:20px;
+.hidden { display: none; }
+
+textarea, input, select {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  font-family: "Times New Roman", serif;
+  font-size: 16px;
 }
 
-/* ===== FORM ===== */
-form{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+/* DROPDOWN */
+.dropdown-header {
+  cursor: pointer;
+  background: #eef3ff;
+  padding: 14px;
+  border-radius: 6px;
+  font-weight: bold;
 }
 
-input, textarea{
-  padding:10px;
-  font-family:inherit;
-  font-size:16px;
+.dropdown-content {
+  display: none;
+  margin-top: 15px;
 }
 
-textarea{min-height:120px;}
-
-button{
-  background:#5c86cb;
-  color:white;
-  padding:12px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
+.dropdown.open .dropdown-content {
+  display: block;
 }
 
-/* ===== ADMIN ===== */
-.hidden{display:none;}
-
-.admin-box{
-  border:1px solid #ccc;
-  padding:15px;
-  margin-bottom:15px;
-  background:#f7f7f7;
-  border-radius:6px;
+/* IMAGE GROUPS */
+.image-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.editor-toolbar button{
-  margin-right:5px;
+.image-row img {
+  width: 30%;
+  max-width: 250px;
+  border-radius: 6px;
 }
 
-/* ===== FOOTER ===== */
-footer{
-  text-align:center;
-  font-size:12px;
-  padding:10px;
-  background:#eee;
+/* ADMIN EDITING */
+.editable {
+  border: 1px dashed #aaa;
+  padding: 10px;
 }
-#admin-link{
-  font-size:11px;
-  cursor:pointer;
-  color:#777;
+
+.format-bar button {
+  margin-right: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+/* DONOR TRUST SECTION */
+#trust-section {
+  background: #eef5ff;
+  border-radius: 10px;
+  padding: 30px;
+  margin-top: 20px;
 }
 </style>
 </head>
@@ -106,161 +117,169 @@ footer{
 <body>
 
 <header>
-<h1>Restoring Smiles with Smile Forward</h1>
-<p>A student based Non-Profit organization based in Mississauga promoting oral health awareness</p>
+  <div class="header-wrap">
+    <img id="logo" alt="Organization Logo">
+    <div>
+      <h1 id="title"></h1>
+      <p id="org-text"></p>
+    </div>
+  </div>
 </header>
 
-<section>
-<div class="dropdown-title" onclick="toggle(this)">Our Mission</div>
-<div class="dropdown-content">
-<div class="dropdown-inner" contenteditable="false" id="mission-text">
+<section class="dropdown">
+  <div class="dropdown-header" onclick="toggleDropdown(this)">Our Mission</div>
+  <div class="dropdown-content">
+    <p id="mission"></p>
+    <div id="mission-images" class="image-row"></div>
+  </div>
+</section>
 
-<p>For many people, brushing their teeth is a simple daily habit, something done almost automatically, without a second thought. It is part of a routine that supports health, comfort, and confidence. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often limited or completely unavailable.</p>
-
-<p>When essentials like toothbrushes, toothpaste, and floss are out of reach, oral health quickly becomes compromised, turning small, preventable issues into painful and persistent problems.</p>
-
-<p>Our mission is to bridge this gap by providing essential oral hygiene kits to individuals who need them most. These kits include basic yet powerful tools for maintaining oral health, tools that help prevent infection, reduce discomfort, and support overall well-being.</p>
-
-<p>Beyond physical health, access to oral care plays a significant role in restoring confidence and dignity.</p>
-
-<p>A healthy smile can influence how someone feels about themselves, how they interact with others, and how they navigate daily life.</p>
-
-<p>Through compassion-driven action, education, and community involvement, we aim to make oral health a priority rather than a privilege.</p>
-
-<p>We believe that everyone deserves access to basic care, regardless of their circumstances.</p>
-
-<p>By addressing oral health needs at the most fundamental level, we are not only preventing disease but also supporting self-worth, resilience, and hope.</p>
-
-<p>Our work is rooted in the belief that meaningful change begins with small, consistent actions that collectively make a lasting impact.</p>
-
-<div id="mission-images"></div>
-</div>
-</div>
+<section class="dropdown">
+  <div class="dropdown-header" onclick="toggleDropdown(this)">Why Oral Health Matters</div>
+  <div class="dropdown-content">
+    <p id="why"></p>
+    <div id="why-images" class="image-row"></div>
+  </div>
 </section>
 
 <section>
-<div class="dropdown-title" onclick="toggle(this)">Why Oral Health Matters</div>
-<div class="dropdown-content">
-<div class="dropdown-inner" contenteditable="false" id="why-text">
-
-<p>Oral health is far more than just a bright smile, it is a critical component of overall physical and mental health.</p>
-
-<p>Research has shown strong connections between poor oral hygiene and serious health conditions such as heart disease, diabetes, respiratory infections, and chronic inflammation.</p>
-
-<p>When oral health is neglected, bacteria in the mouth can enter the bloodstream, contributing to systemic health issues that extend well beyond the teeth and gums.</p>
-
-<p>For individuals facing housing insecurity, these risks are significantly heightened.</p>
-
-<p>Limited access to dental care, hygiene supplies, and preventative education often means that oral health issues go untreated until they become severe.</p>
-
-<p>Pain, infection, and tooth loss can interfere with eating, speaking, and sleeping, making daily survival even more challenging.</p>
-
-<p>Visible dental issues can impact self-esteem and create barriers to employment, social interaction, and access to services.</p>
-
-<p>Preventative oral care is one of the most effective and accessible ways to protect long-term health.</p>
-
-<p>Simple daily practices, when supported with the right tools, can prevent the majority of common dental problems.</p>
-
-<p>By providing education and essential supplies, we help individuals take control of their oral health and reduce the likelihood of serious complications in the future.</p>
-
-<p>Investing in oral health is an investment in overall well-being, confidence, and quality of life.</p>
-
-<div id="why-images"></div>
-</div>
-</div>
+<h2>Donate</h2>
+<p id="donate-text"></p>
+<a id="donate-button" href="#" target="_blank">
+  <button class="button">Donate Now</button>
+</a>
 </section>
 
+<section id="trust-section">
+<h2>How Your Donation Makes a Difference</h2>
+<p>
+100% of funds raised go directly toward assembling and distributing oral health kits.
+Each kit includes a toothbrush, toothpaste, floss, and educational material, helping
+prevent infections, reduce emergency care visits, and restore dignity.
+</p>
+<p>
+Transparency and accountability are core to our mission. We regularly document outreach
+events and partner with local shelters to ensure donations create measurable impact.
+</p>
+</section>
+
+<div id="admin-area" class="hidden">
 <section>
-<h2>Have questions? Let us know!</h2>
-<form onsubmit="submitQ(event)">
-<input id="qname" placeholder="Name (Optional)">
-<input id="qemail" placeholder="Email">
-<textarea id="qtext" placeholder="Your question"></textarea>
-<button>Submit</button>
-</form>
-</section>
+<h3>Admin Panel</h3>
 
-<section id="admin" class="hidden">
-<h2>Admin Panel</h2>
-
-<div class="editor-toolbar">
-<button onclick="format('bold')">Bold</button>
-<button onclick="format('italic')">Italic</button>
-<button onclick="format('underline')">Underline</button>
-<input type="file" onchange="addImage(this)">
+<div class="format-bar">
+  <button onclick="format('bold')">Bold</button>
+  <button onclick="format('italic')">Italic</button>
+  <button onclick="format('underline')">Underline</button>
 </div>
 
-<p><strong>Edit text by clicking inside sections above</strong></p>
+<label>Font Size</label>
+<select id="font-size" onchange="changeFontSize(this.value)">
+  <option value="16">Small</option>
+  <option value="18" selected>Medium</option>
+  <option value="20">Large</option>
+  <option value="22">Extra Large</option>
+</select>
 
-<h3>Submitted Questions</h3>
-<div id="questions"></div>
+<label>Upload Logo</label>
+<input type="file" accept="image/*" onchange="uploadLogo(event)">
+
+<label>Mission Images (max 3)</label>
+<input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'mission')">
+
+<label>Why Images (max 3)</label>
+<input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'why')">
+
+<label>Donate Button Link</label>
+<input id="donate-link-input">
+
+<button class="button" onclick="saveChanges()">Save Changes</button>
 </section>
+</div>
 
 <footer>
 <p>© 2025 Smile Forward</p>
-<span id="admin-link" onclick="login()">admin</span>
+<span id="admin-link" onclick="adminLogin()">admin</span>
 </footer>
 
 <script>
-function toggle(el){
-  el.nextElementSibling.classList.toggle("open");
+const PASSWORD="admin123";
+
+const DEFAULT_CONTENT={
+title:"Restoring Smiles with Smile Forward",
+orgText:"A student based Non-Profit organization based in Mississauga promoting oral health awareness",
+mission:"For many people, brushing their teeth is a simple daily habit...",
+why:"Oral health is far more than just a bright smile...",
+donate:"Your support plays a vital role..."
+};
+
+function loadText(id,key){
+document.getElementById(id).innerHTML=localStorage.getItem(key)||DEFAULT_CONTENT[key];
 }
 
-function submitQ(e){
-  e.preventDefault();
-  const q=JSON.parse(localStorage.getItem("qs")||"[]");
-  q.push({
-    name:qname.value||"Anonymous",
-    email:qemail.value,
-    text:qtext.value
-  });
-  localStorage.setItem("qs",JSON.stringify(q));
-  alert("Submitted!");
+function loadImages(key,container){
+(JSON.parse(localStorage.getItem(key)||"[]")).forEach(src=>{
+let img=document.createElement("img");
+img.src=src;
+container.appendChild(img);
+});
 }
 
-function login(){
-  if(prompt("Password")==="admin123"){
-    admin.classList.remove("hidden");
-    mission-text.contentEditable=true;
-    why-text.contentEditable=true;
-    loadQs();
-  }
+window.onload=()=>{
+loadText("title","title");
+loadText("org-text","orgText");
+loadText("mission","mission");
+loadText("why","why");
+loadText("donate-text","donate");
+
+loadImages("missionImgs",document.getElementById("mission-images"));
+loadImages("whyImgs",document.getElementById("why-images"));
+
+let logo=localStorage.getItem("logo");
+if(logo){document.getElementById("logo").src=logo;document.getElementById("logo").style.display="block";}
+
+document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
+document.getElementById("donate-button").href=localStorage.getItem("donateLink")||"#";
+};
+
+function adminLogin(){
+if(prompt("Password")===PASSWORD){
+document.getElementById("admin-area").classList.remove("hidden");
+["title","org-text","mission","why","donate-text"].forEach(id=>{
+document.getElementById(id).contentEditable=true;
+document.getElementById(id).classList.add("editable");
+});
+}
 }
 
-function loadQs(){
-  const qs=JSON.parse(localStorage.getItem("qs")||"[]");
-  questions.innerHTML="";
-  qs.forEach((q,i)=>{
-    questions.innerHTML+=`
-    <div class="admin-box">
-    <strong>${i+1}</strong><br>
-    Name: ${q.name}<br>
-    Email: ${q.email}<br>
-    Question: ${q.text}
-    </div>`;
-  });
+function saveChanges(){
+["title","org-text","mission","why","donate-text"].forEach(id=>{
+localStorage.setItem(id,document.getElementById(id).innerHTML);
+document.getElementById(id).contentEditable=false;
+});
+localStorage.setItem("donateLink",document.getElementById("donate-link-input").value);
+location.reload();
 }
 
-function format(cmd){
-  document.execCommand(cmd,false,null);
+function toggleDropdown(el){el.parentElement.classList.toggle("open");}
+function format(cmd){document.execCommand(cmd,false,null);}
+function changeFontSize(v){document.body.style.fontSize=v+"px";localStorage.setItem("fontSize",v);}
+
+function uploadLogo(e){
+let r=new FileReader();
+r.onload=()=>{localStorage.setItem("logo",r.result);document.getElementById("logo").src=r.result;document.getElementById("logo").style.display="block";}
+r.readAsDataURL(e.target.files[0]);
 }
 
-function addImage(input){
-  const file=input.files[0];
-  const reader=new FileReader();
-  reader.onload=()=>{
-    const img=document.createElement("img");
-    img.src=reader.result;
-    img.style.maxWidth="100%";
-    document.getSelection().anchorNode.parentElement.appendChild(img);
-  };
-  reader.readAsDataURL(file);
+function uploadSectionImages(e,key){
+let arr=[];
+Array.from(e.target.files).slice(0,3).forEach(f=>{
+let r=new FileReader();
+r.onload=()=>{arr.push(r.result);localStorage.setItem(key+"Imgs",JSON.stringify(arr));}
+r.readAsDataURL(f);
+});
 }
 </script>
-
-</body>
-</html>
-
 
 </body>
 </html>
