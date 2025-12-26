@@ -72,7 +72,7 @@ textarea, input, select {
 }
 
 .dropdown-content {
-  display: none;
+  display: all text;
   overflow: visible !important; /* Force all content to be visible */
   padding-top: 0;
 }
@@ -365,8 +365,10 @@ container.appendChild(div);
 
 // DROPDOWN
 function toggleDropdown(el){
-let parent=el.parentElement;
-parent.classList.toggle("open");
+let content = el.nextElementSibling;
+content.style.display = content.style.display === "block" ? "none" : "block";
+}
+
 }
 
 // FORMAT & FONT
