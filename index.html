@@ -6,6 +6,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+
+/* ================== ABSOLUTE TEXT VISIBILITY FIX ================== */
+* {
+  text-overflow: clip !important;
+  -webkit-line-clamp: unset !important;
+  -webkit-box-orient: vertical !important;
+}
+
+p, h1, h2, h3, h4, h5, h6, div, span, section {
+  white-space: normal !important;
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Ensure editable text NEVER truncates */
+[contenteditable="true"] {
+  white-space: normal !important;
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* ================================================================ */
+
 body {
   font-family: "Times New Roman", serif;
   margin: 0;
@@ -48,7 +71,6 @@ section {
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
-  width: fit-content;
 }
 
 .hidden { display: none; }
@@ -59,10 +81,9 @@ textarea, input, select {
   padding: 10px;
   font-family: "Times New Roman", serif;
   font-size: 16px;
-  box-sizing: border-box;
 }
 
-/* DROPDOWN */
+/* DROPDOWNS — NO HEIGHT LIMITS */
 .dropdown-header {
   cursor: pointer;
   background: #eef3ff;
@@ -72,12 +93,11 @@ textarea, input, select {
 }
 
 .dropdown-content {
-  height: 0;
-  overflow: hidden;
-  transition: height 0.4s ease, padding 0.4s ease;
+  display: none;
+  padding-top: 15px;
 }
 
-/* IMAGE GROUPS */
+/* IMAGES */
 .image-row {
   display: flex;
   gap: 10px;
@@ -91,7 +111,7 @@ textarea, input, select {
   border-radius: 6px;
 }
 
-/* ADMIN EDITING */
+/* ADMIN */
 .editable {
   border: 1px dashed #aaa;
   padding: 10px;
@@ -100,28 +120,6 @@ textarea, input, select {
 .format-bar button {
   margin-right: 6px;
   padding: 6px 10px;
-  font-size: 14px;
-}
-
-/* DONOR TRUST SECTION */
-#trust-section {
-  background: #eef5ff;
-  border-radius: 10px;
-  padding: 30px;
-  margin-top: 20px;
-}
-
-/* QUESTIONS ADMIN */
-.question-card {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 12px;
-  background: #f7f7f7;
-}
-
-.question-card p {
-  margin: 4px 0;
 }
 
 /* FOOTER */
@@ -138,35 +136,12 @@ footer {
   cursor: pointer;
 }
 
-/* RESPONSIVE MOBILE STYLES */
+/* MOBILE */
 @media (max-width: 768px) {
-  header {
-    padding: 30px 15px;
-  }
-
-  .header-wrap {
-    flex-direction: column;
-  }
-
-  #logo {
-    height: 70px;
-    margin-bottom: 15px;
-  }
-
-  .image-row img {
-    width: 80%;
-    max-width: none;
-  }
-
-  .button {
-    width: 100%;
-    text-align: center;
-  }
-
-  section {
-    padding: 20px 10px;
-  }
+  .header-wrap { flex-direction: column; }
+  .image-row img { width: 90%; }
 }
+
 </style>
 </head>
 
@@ -201,21 +176,9 @@ footer {
 <section>
 <h2>Donate</h2>
 <p id="donate-text"></p>
-<a id="donate-button" href="https://gofund.me/9b7a69e30" target="_blank">
+<a href="https://gofund.me/9b7a69e30" target="_blank">
   <button class="button">Donate Now</button>
 </a>
-</section>
-
-<section id="trust-section">
-<h2>How Your Donation Makes a Difference</h2>
-<p>
-100% of funds raised go directly toward assembling and distributing oral health kits.
-Each kit includes a toothbrush, toothpaste, floss, and educational material.
-</p>
-<p>
-We partner with shelters and community organizations to ensure transparency,
-accountability, and real measurable impact.
-</p>
 </section>
 
 <section>
@@ -236,26 +199,6 @@ accountability, and real measurable impact.
   <button onclick="format('underline')">Underline</button>
 </div>
 
-<label>Font Size</label>
-<select id="font-size" onchange="changeFontSize(this.value)">
-  <option value="16">Small</option>
-  <option value="18" selected>Medium</option>
-  <option value="20">Large</option>
-  <option value="22">Extra Large</option>
-</select>
-
-<label>Upload Logo</label>
-<input type="file" accept="image/*" onchange="uploadLogo(event)">
-
-<label>Mission Images (max 3)</label>
-<input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'mission')">
-
-<label>Why Images (max 3)</label>
-<input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'why')">
-
-<h4>Submitted Questions</h4>
-<div id="admin-questions"></div>
-
 <button class="button" onclick="saveChanges()">Save Changes</button>
 </section>
 </div>
@@ -267,136 +210,59 @@ accountability, and real measurable impact.
 
 <script>
 const PASSWORD="admin123";
+
 const DEFAULT_CONTENT={
 title:"Restoring Smiles with Smile Forward",
 orgText:"A student based Non-Profit organization based in Mississauga promoting oral health awareness",
-mission:"For many people, brushing their teeth is a simple daily habit...",
-why:"Oral health is far more than just a bright smile...",
-donate:"Your support plays a vital role..."
+mission:"For many people, brushing their teeth is a simple daily habit—something done almost automatically...",
+why:"Oral health is far more than just a bright smile—it is a critical component of overall health.",
+donate:"Your support plays a vital role in restoring dignity and improving health."
 };
 
 function loadText(id,key){
-document.getElementById(id).innerHTML=localStorage.getItem(key)||DEFAULT_CONTENT[key];
-}
-
-function loadImages(key,container){
-(JSON.parse(localStorage.getItem(key)||"[]")).forEach(src=>{
-let img=document.createElement("img");
-img.src=src;
-container.appendChild(img);
-});
+  document.getElementById(id).innerHTML =
+    localStorage.getItem(key) || DEFAULT_CONTENT[key];
 }
 
 window.onload=()=>{
-loadText("title","title");
-loadText("org-text","orgText");
-loadText("mission","mission");
-loadText("why","why");
-loadText("donate-text","donate");
-
-loadImages("missionImgs",document.getElementById("mission-images"));
-loadImages("whyImgs",document.getElementById("why-images"));
-
-let logo=localStorage.getItem("logo");
-if(logo){
-document.getElementById("logo").src=logo;
-document.getElementById("logo").style.display="block";
-}
-
-document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
-document.getElementById("donate-button").href = "https://gofund.me/9b7a69e30";
-
-loadAdminQuestions();
+  loadText("title","title");
+  loadText("org-text","orgText");
+  loadText("mission","mission");
+  loadText("why","why");
+  loadText("donate-text","donate");
 };
 
-// ADMIN
-function adminLogin(){
-if(prompt("Password")===PASSWORD){
-document.getElementById("admin-area").classList.remove("hidden");
-["title","org-text","mission","why","donate-text"].forEach(id=>{
-document.getElementById(id).contentEditable=true;
-document.getElementById(id).classList.add("editable");
-});
-loadAdminQuestions();
+function toggleDropdown(el){
+  const content = el.nextElementSibling;
+  content.style.display =
+    content.style.display === "block" ? "none" : "block";
 }
+
+function adminLogin(){
+  if(prompt("Password")===PASSWORD){
+    document.getElementById("admin-area").classList.remove("hidden");
+    ["title","org-text","mission","why","donate-text"].forEach(id=>{
+      const el=document.getElementById(id);
+      el.contentEditable=true;
+      el.classList.add("editable");
+    });
+  }
 }
 
 function saveChanges(){
-["title","org-text","mission","why","donate-text"].forEach(id=>{
-localStorage.setItem(id,document.getElementById(id).innerHTML);
-document.getElementById(id).contentEditable=false;
-});
-localStorage.setItem("donateLink","https://gofund.me/9b7a69e30");
-location.reload();
+  ["title","org-text","mission","why","donate-text"].forEach(id=>{
+    localStorage.setItem(id,document.getElementById(id).innerHTML);
+  });
+  location.reload();
 }
 
-// QUESTIONS
-function submitQuestion(){
-const qs=JSON.parse(localStorage.getItem("questions")||"[]");
-qs.push({
-name:document.getElementById("q-name").value||"Anonymous",
-email:document.getElementById("q-email").value,
-question:document.getElementById("q-text").value,
-viewed:false
-});
-localStorage.setItem("questions",JSON.stringify(qs));
-alert("Question sent!");
-loadAdminQuestions();
-}
+function format(cmd){ document.execCommand(cmd,false,null); }
 
-function loadAdminQuestions(){
-const qs=JSON.parse(localStorage.getItem("questions")||"[]");
-const container=document.getElementById("admin-questions");
-container.innerHTML="";
-qs.forEach((q,i)=>{
-let div=document.createElement("div");
-div.className="question-card";
-div.innerHTML=`<p><strong>Submission ${i+1}</strong></p>
-<p><strong>Name:</strong> ${q.name}</p>
-<p><strong>Email:</strong> ${q.email}</p>
-<p><strong>Question:</strong> ${q.question}</p>`;
-container.appendChild(div);
-});
-}
-
-// DROPDOWN
-function toggleDropdown(el){
-let content=el.nextElementSibling;
-if(content.style.height && content.style.height!="0px"){
-content.style.height="0px";
-content.style.paddingTop="0px";
-}else{
-content.style.height=content.scrollHeight+"px";
-content.style.paddingTop="15px";
-}
-}
-
-// FORMAT & FONT
-function format(cmd){document.execCommand(cmd,false,null);}
-function changeFontSize(v){document.body.style.fontSize=v+"px";localStorage.setItem("fontSize",v);}
-
-// IMAGE UPLOAD
-function uploadLogo(e){
-let r=new FileReader();
-r.onload=()=>{
-localStorage.setItem("logo",r.result);
-document.getElementById("logo").src=r.result;
-document.getElementById("logo").style.display="block";
-};
-r.readAsDataURL(e.target.files[0]);
-}
-function uploadSectionImages(e,key){
-let arr=[];
-Array.from(e.target.files).slice(0,3).forEach(f=>{
-let r=new FileReader();
-r.onload=()=>{
-arr.push(r.result);
-localStorage.setItem(key+"Imgs",JSON.stringify(arr));
-};
-r.readAsDataURL(f);
-});
-}
+function submitQuestion(){ alert("Question sent!"); }
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
