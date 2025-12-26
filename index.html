@@ -7,27 +7,20 @@
 
 <style>
 
-/* ================== ABSOLUTE TEXT VISIBILITY FIX ================== */
+/* ====== GLOBAL GUARANTEE: NO TEXT TRUNCATION EVER ====== */
 * {
   text-overflow: clip !important;
   -webkit-line-clamp: unset !important;
   -webkit-box-orient: vertical !important;
 }
 
-p, h1, h2, h3, h4, h5, h6, div, span, section {
+p, div, section {
   white-space: normal !important;
   overflow: visible !important;
   max-height: none !important;
 }
 
-/* Ensure editable text NEVER truncates */
-[contenteditable="true"] {
-  white-space: normal !important;
-  overflow: visible !important;
-  max-height: none !important;
-}
-
-/* ================================================================ */
+/* ===================================================== */
 
 body {
   font-family: "Times New Roman", serif;
@@ -41,20 +34,7 @@ body {
 header {
   background: #cfe2ff;
   padding: 40px 20px;
-}
-
-.header-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
   text-align: center;
-}
-
-#logo {
-  height: 90px;
-  display: none;
 }
 
 section {
@@ -75,54 +55,35 @@ section {
 
 .hidden { display: none; }
 
-textarea, input, select {
-  width: 100%;
-  margin-top: 8px;
-  padding: 10px;
-  font-family: "Times New Roman", serif;
-  font-size: 16px;
-}
-
-/* DROPDOWNS — NO HEIGHT LIMITS */
+/* ===== DROPDOWN WITH ANIMATION ===== */
 .dropdown-header {
-  cursor: pointer;
   background: #eef3ff;
   padding: 14px;
   border-radius: 6px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .dropdown-content {
-  display: none;
-  padding-top: 15px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s ease;
 }
 
-/* IMAGES */
-.image-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
+.dropdown-content.open {
+  max-height: 5000px; /* large enough for all text */
 }
 
-.image-row img {
-  width: 30%;
-  max-width: 250px;
-  border-radius: 6px;
-}
-
-/* ADMIN */
-.editable {
-  border: 1px dashed #aaa;
+/* ===== QUESTIONS ADMIN ===== */
+.question-card {
+  border: 1px solid #ccc;
   padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background: #f7f7f7;
 }
 
-.format-bar button {
-  margin-right: 6px;
-  padding: 6px 10px;
-}
-
-/* FOOTER */
+/* ===== FOOTER ===== */
 footer {
   background: #eee;
   text-align: center;
@@ -136,10 +97,9 @@ footer {
   cursor: pointer;
 }
 
-/* MOBILE */
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
-  .header-wrap { flex-direction: column; }
-  .image-row img { width: 90%; }
+  body { font-size: 17px; }
 }
 
 </style>
@@ -148,34 +108,71 @@ footer {
 <body>
 
 <header>
-  <div class="header-wrap">
-    <img id="logo" alt="Organization Logo">
-    <div>
-      <h1 id="title"></h1>
-      <p id="org-text"></p>
-    </div>
-  </div>
+  <h1>Restoring Smiles with Smile Forward</h1>
+  <p>A student based Non-Profit organization based in Mississauga promoting oral health awareness</p>
 </header>
 
-<section class="dropdown">
-  <div class="dropdown-header" onclick="toggleDropdown(this)">Our Mission</div>
+<section>
+  <div class="dropdown-header" onclick="toggle(this)">Our Mission</div>
   <div class="dropdown-content">
-    <p id="mission"></p>
-    <div id="mission-images" class="image-row"></div>
+    <p>
+For many people, brushing their teeth is a simple daily habit, something done almost automatically, without a second thought. It is part of a routine that supports health, comfort, and confidence. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often limited or completely unavailable.
+<br><br>
+When essentials like toothbrushes, toothpaste, and floss are out of reach, oral health quickly becomes compromised, turning small, preventable issues into painful and persistent problems.
+<br><br>
+Our mission is to bridge this gap by providing essential oral hygiene kits to individuals who need them most. These kits include basic yet powerful tools for maintaining oral health, tools that help prevent infection, reduce discomfort, and support overall well-being.
+<br><br>
+Beyond physical health, access to oral care plays a significant role in restoring confidence and dignity.
+<br><br>
+A healthy smile can influence how someone feels about themselves, how they interact with others, and how they navigate daily life.
+<br><br>
+Through compassion-driven action, education, and community involvement, we aim to make oral health a priority rather than a privilege.
+<br><br>
+We believe that everyone deserves access to basic care, regardless of their circumstances.
+<br><br>
+By addressing oral health needs at the most fundamental level, we are not only preventing disease but also supporting self-worth, resilience, and hope.
+<br><br>
+Our work is rooted in the belief that meaningful change begins with small, consistent actions that collectively make a lasting impact.
+    </p>
   </div>
 </section>
 
-<section class="dropdown">
-  <div class="dropdown-header" onclick="toggleDropdown(this)">Why Oral Health Matters</div>
+<section>
+  <div class="dropdown-header" onclick="toggle(this)">Why Oral Health Matters</div>
   <div class="dropdown-content">
-    <p id="why"></p>
-    <div id="why-images" class="image-row"></div>
+    <p>
+Oral health is far more than just a bright smile, it is a critical component of overall physical and mental health.
+<br><br>
+Research has shown strong connections between poor oral hygiene and serious health conditions such as heart disease, diabetes, respiratory infections, and chronic inflammation.
+<br><br>
+When oral health is neglected, bacteria in the mouth can enter the bloodstream, contributing to systemic health issues that extend well beyond the teeth and gums.
+<br><br>
+For individuals facing housing insecurity, these risks are significantly heightened.
+<br><br>
+Limited access to dental care, hygiene supplies, and preventative education often means that oral health issues go untreated until they become severe.
+<br><br>
+Pain, infection, and tooth loss can interfere with eating, speaking, and sleeping, making daily survival even more challenging.
+<br><br>
+Visible dental issues can impact self-esteem and create barriers to employment, social interaction, and access to services.
+<br><br>
+Preventative oral care is one of the most effective and accessible ways to protect long-term health.
+<br><br>
+Simple daily practices, when supported with the right tools, can prevent the majority of common dental problems.
+<br><br>
+By providing education and essential supplies, we help individuals take control of their oral health and reduce the likelihood of serious complications in the future.
+<br><br>
+Investing in oral health is an investment in overall well-being, confidence, and quality of life.
+    </p>
   </div>
 </section>
 
 <section>
 <h2>Donate</h2>
-<p id="donate-text"></p>
+<p>
+Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness.
+Every contribution helps provide essential oral hygiene supplies that prevent pain, infection, and long-term complications.
+Together, we can create healthier smiles and stronger communities.
+</p>
 <a href="https://gofund.me/9b7a69e30" target="_blank">
   <button class="button">Donate Now</button>
 </a>
@@ -192,14 +189,8 @@ footer {
 <div id="admin-area" class="hidden">
 <section>
 <h3>Admin Panel</h3>
-
-<div class="format-bar">
-  <button onclick="format('bold')">Bold</button>
-  <button onclick="format('italic')">Italic</button>
-  <button onclick="format('underline')">Underline</button>
-</div>
-
-<button class="button" onclick="saveChanges()">Save Changes</button>
+<h4>Submitted Questions</h4>
+<div id="admin-questions"></div>
 </section>
 </div>
 
@@ -209,60 +200,48 @@ footer {
 </footer>
 
 <script>
-const PASSWORD="admin123";
+const PASSWORD = "admin123";
 
-const DEFAULT_CONTENT={
-title:"Restoring Smiles with Smile Forward",
-orgText:"A student based Non-Profit organization based in Mississauga promoting oral health awareness",
-mission:"For many people, brushing their teeth is a simple daily habit—something done almost automatically...",
-why:"Oral health is far more than just a bright smile—it is a critical component of overall health.",
-donate:"Your support plays a vital role in restoring dignity and improving health."
-};
-
-function loadText(id,key){
-  document.getElementById(id).innerHTML =
-    localStorage.getItem(key) || DEFAULT_CONTENT[key];
+function toggle(el){
+  const content = el.nextElementSibling;
+  content.classList.toggle("open");
 }
 
-window.onload=()=>{
-  loadText("title","title");
-  loadText("org-text","orgText");
-  loadText("mission","mission");
-  loadText("why","why");
-  loadText("donate-text","donate");
-};
-
-function toggleDropdown(el){
-  const content = el.nextElementSibling;
-  content.style.display =
-    content.style.display === "block" ? "none" : "block";
+function submitQuestion(){
+  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
+  qs.push({
+    name: document.getElementById("q-name").value || "Anonymous",
+    email: document.getElementById("q-email").value,
+    question: document.getElementById("q-text").value
+  });
+  localStorage.setItem("questions", JSON.stringify(qs));
+  alert("Question sent!");
 }
 
 function adminLogin(){
-  if(prompt("Password")===PASSWORD){
+  if(prompt("Password") === PASSWORD){
     document.getElementById("admin-area").classList.remove("hidden");
-    ["title","org-text","mission","why","donate-text"].forEach(id=>{
-      const el=document.getElementById(id);
-      el.contentEditable=true;
-      el.classList.add("editable");
-    });
+    loadAdminQuestions();
   }
 }
 
-function saveChanges(){
-  ["title","org-text","mission","why","donate-text"].forEach(id=>{
-    localStorage.setItem(id,document.getElementById(id).innerHTML);
+function loadAdminQuestions(){
+  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
+  const box = document.getElementById("admin-questions");
+  box.innerHTML = "";
+  qs.forEach((q,i)=>{
+    const div = document.createElement("div");
+    div.className = "question-card";
+    div.innerHTML = `
+      <strong>Submission ${i+1}</strong><br>
+      <strong>Name:</strong> ${q.name}<br>
+      <strong>Email:</strong> ${q.email}<br>
+      <strong>Question:</strong> ${q.question}
+    `;
+    box.appendChild(div);
   });
-  location.reload();
 }
-
-function format(cmd){ document.execCommand(cmd,false,null); }
-
-function submitQuestion(){ alert("Question sent!"); }
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
