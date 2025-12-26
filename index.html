@@ -2,246 +2,265 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Restoring Smiles</title>
+<title>Smile Forward</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-
-/* ====== GLOBAL GUARANTEE: NO TEXT TRUNCATION EVER ====== */
-* {
-  text-overflow: clip !important;
-  -webkit-line-clamp: unset !important;
-  -webkit-box-orient: vertical !important;
+body{
+  font-family:"Times New Roman",serif;
+  margin:0;
+  background:#f9f9f9;
+  color:#333;
+  line-height:1.9;
 }
 
-p, div, section {
-  white-space: normal !important;
-  overflow: visible !important;
-  max-height: none !important;
+header{
+  background:#cfe2ff;
+  padding:40px 20px;
+  text-align:center;
 }
 
-/* ===================================================== */
-
-body {
-  font-family: "Times New Roman", serif;
-  margin: 0;
-  background: #f9f9f9;
-  color: #333;
-  font-size: 18px;
-  line-height: 1.9;
+section{
+  max-width:900px;
+  margin:auto;
+  padding:25px 20px;
 }
 
-header {
-  background: #cfe2ff;
-  padding: 40px 20px;
-  text-align: center;
+/* ===== DROPDOWN ===== */
+.dropdown-title{
+  background:#eef3ff;
+  padding:15px;
+  border-radius:6px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-section {
-  max-width: 900px;
-  margin: auto;
-  padding: 25px 15px;
+.dropdown-content{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.6s ease;
 }
 
-.button {
-  background: #5c86cb;
-  color: white;
-  padding: 14px 26px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
+.dropdown-content.open{
+  max-height:6000px;
 }
 
-.hidden { display: none; }
-
-/* ===== DROPDOWN WITH ANIMATION ===== */
-.dropdown-header {
-  background: #eef3ff;
-  padding: 14px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
+.dropdown-inner{
+  padding-top:20px;
 }
 
-.dropdown-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.6s ease;
+/* ===== FORM ===== */
+form{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-.dropdown-content.open {
-  max-height: 5000px; /* large enough for all text */
+input, textarea{
+  padding:10px;
+  font-family:inherit;
+  font-size:16px;
 }
 
-/* ===== QUESTIONS ADMIN ===== */
-.question-card {
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  background: #f7f7f7;
+textarea{min-height:120px;}
+
+button{
+  background:#5c86cb;
+  color:white;
+  padding:12px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* ===== ADMIN ===== */
+.hidden{display:none;}
+
+.admin-box{
+  border:1px solid #ccc;
+  padding:15px;
+  margin-bottom:15px;
+  background:#f7f7f7;
+  border-radius:6px;
+}
+
+.editor-toolbar button{
+  margin-right:5px;
 }
 
 /* ===== FOOTER ===== */
-footer {
-  background: #eee;
-  text-align: center;
-  padding: 10px;
-  font-size: 12px;
+footer{
+  text-align:center;
+  font-size:12px;
+  padding:10px;
+  background:#eee;
 }
-
-#admin-link {
-  font-size: 11px;
-  color: #999;
-  cursor: pointer;
+#admin-link{
+  font-size:11px;
+  cursor:pointer;
+  color:#777;
 }
-
-/* ===== MOBILE ===== */
-@media (max-width: 768px) {
-  body { font-size: 17px; }
-}
-
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>Restoring Smiles with Smile Forward</h1>
-  <p>A student based Non-Profit organization based in Mississauga promoting oral health awareness</p>
+<h1>Restoring Smiles with Smile Forward</h1>
+<p>A student based Non-Profit organization based in Mississauga promoting oral health awareness</p>
 </header>
 
 <section>
-  <div class="dropdown-header" onclick="toggle(this)">Our Mission</div>
-  <div class="dropdown-content">
-    <p>
-For many people, brushing their teeth is a simple daily habit, something done almost automatically, without a second thought. It is part of a routine that supports health, comfort, and confidence. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often limited or completely unavailable.
-<br><br>
-When essentials like toothbrushes, toothpaste, and floss are out of reach, oral health quickly becomes compromised, turning small, preventable issues into painful and persistent problems.
-<br><br>
-Our mission is to bridge this gap by providing essential oral hygiene kits to individuals who need them most. These kits include basic yet powerful tools for maintaining oral health, tools that help prevent infection, reduce discomfort, and support overall well-being.
-<br><br>
-Beyond physical health, access to oral care plays a significant role in restoring confidence and dignity.
-<br><br>
-A healthy smile can influence how someone feels about themselves, how they interact with others, and how they navigate daily life.
-<br><br>
-Through compassion-driven action, education, and community involvement, we aim to make oral health a priority rather than a privilege.
-<br><br>
-We believe that everyone deserves access to basic care, regardless of their circumstances.
-<br><br>
-By addressing oral health needs at the most fundamental level, we are not only preventing disease but also supporting self-worth, resilience, and hope.
-<br><br>
-Our work is rooted in the belief that meaningful change begins with small, consistent actions that collectively make a lasting impact.
-    </p>
-  </div>
+<div class="dropdown-title" onclick="toggle(this)">Our Mission</div>
+<div class="dropdown-content">
+<div class="dropdown-inner" contenteditable="false" id="mission-text">
+
+<p>For many people, brushing their teeth is a simple daily habit, something done almost automatically, without a second thought. It is part of a routine that supports health, comfort, and confidence. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often limited or completely unavailable.</p>
+
+<p>When essentials like toothbrushes, toothpaste, and floss are out of reach, oral health quickly becomes compromised, turning small, preventable issues into painful and persistent problems.</p>
+
+<p>Our mission is to bridge this gap by providing essential oral hygiene kits to individuals who need them most. These kits include basic yet powerful tools for maintaining oral health, tools that help prevent infection, reduce discomfort, and support overall well-being.</p>
+
+<p>Beyond physical health, access to oral care plays a significant role in restoring confidence and dignity.</p>
+
+<p>A healthy smile can influence how someone feels about themselves, how they interact with others, and how they navigate daily life.</p>
+
+<p>Through compassion-driven action, education, and community involvement, we aim to make oral health a priority rather than a privilege.</p>
+
+<p>We believe that everyone deserves access to basic care, regardless of their circumstances.</p>
+
+<p>By addressing oral health needs at the most fundamental level, we are not only preventing disease but also supporting self-worth, resilience, and hope.</p>
+
+<p>Our work is rooted in the belief that meaningful change begins with small, consistent actions that collectively make a lasting impact.</p>
+
+<div id="mission-images"></div>
+</div>
+</div>
 </section>
 
 <section>
-  <div class="dropdown-header" onclick="toggle(this)">Why Oral Health Matters</div>
-  <div class="dropdown-content">
-    <p>
-Oral health is far more than just a bright smile, it is a critical component of overall physical and mental health.
-<br><br>
-Research has shown strong connections between poor oral hygiene and serious health conditions such as heart disease, diabetes, respiratory infections, and chronic inflammation.
-<br><br>
-When oral health is neglected, bacteria in the mouth can enter the bloodstream, contributing to systemic health issues that extend well beyond the teeth and gums.
-<br><br>
-For individuals facing housing insecurity, these risks are significantly heightened.
-<br><br>
-Limited access to dental care, hygiene supplies, and preventative education often means that oral health issues go untreated until they become severe.
-<br><br>
-Pain, infection, and tooth loss can interfere with eating, speaking, and sleeping, making daily survival even more challenging.
-<br><br>
-Visible dental issues can impact self-esteem and create barriers to employment, social interaction, and access to services.
-<br><br>
-Preventative oral care is one of the most effective and accessible ways to protect long-term health.
-<br><br>
-Simple daily practices, when supported with the right tools, can prevent the majority of common dental problems.
-<br><br>
-By providing education and essential supplies, we help individuals take control of their oral health and reduce the likelihood of serious complications in the future.
-<br><br>
-Investing in oral health is an investment in overall well-being, confidence, and quality of life.
-    </p>
-  </div>
-</section>
+<div class="dropdown-title" onclick="toggle(this)">Why Oral Health Matters</div>
+<div class="dropdown-content">
+<div class="dropdown-inner" contenteditable="false" id="why-text">
 
-<section>
-<h2>Donate</h2>
-<p>
-Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness.
-Every contribution helps provide essential oral hygiene supplies that prevent pain, infection, and long-term complications.
-Together, we can create healthier smiles and stronger communities.
-</p>
-<a href="https://gofund.me/9b7a69e30" target="_blank">
-  <button class="button">Donate Now</button>
-</a>
+<p>Oral health is far more than just a bright smile, it is a critical component of overall physical and mental health.</p>
+
+<p>Research has shown strong connections between poor oral hygiene and serious health conditions such as heart disease, diabetes, respiratory infections, and chronic inflammation.</p>
+
+<p>When oral health is neglected, bacteria in the mouth can enter the bloodstream, contributing to systemic health issues that extend well beyond the teeth and gums.</p>
+
+<p>For individuals facing housing insecurity, these risks are significantly heightened.</p>
+
+<p>Limited access to dental care, hygiene supplies, and preventative education often means that oral health issues go untreated until they become severe.</p>
+
+<p>Pain, infection, and tooth loss can interfere with eating, speaking, and sleeping, making daily survival even more challenging.</p>
+
+<p>Visible dental issues can impact self-esteem and create barriers to employment, social interaction, and access to services.</p>
+
+<p>Preventative oral care is one of the most effective and accessible ways to protect long-term health.</p>
+
+<p>Simple daily practices, when supported with the right tools, can prevent the majority of common dental problems.</p>
+
+<p>By providing education and essential supplies, we help individuals take control of their oral health and reduce the likelihood of serious complications in the future.</p>
+
+<p>Investing in oral health is an investment in overall well-being, confidence, and quality of life.</p>
+
+<div id="why-images"></div>
+</div>
+</div>
 </section>
 
 <section>
 <h2>Have questions? Let us know!</h2>
-<input id="q-name" placeholder="Name (Optional)">
-<input id="q-email" placeholder="Your email">
-<textarea id="q-text" placeholder="Your question"></textarea>
-<button class="button" onclick="submitQuestion()">Send Question</button>
+<form onsubmit="submitQ(event)">
+<input id="qname" placeholder="Name (Optional)">
+<input id="qemail" placeholder="Email">
+<textarea id="qtext" placeholder="Your question"></textarea>
+<button>Submit</button>
+</form>
 </section>
 
-<div id="admin-area" class="hidden">
-<section>
-<h3>Admin Panel</h3>
-<h4>Submitted Questions</h4>
-<div id="admin-questions"></div>
-</section>
+<section id="admin" class="hidden">
+<h2>Admin Panel</h2>
+
+<div class="editor-toolbar">
+<button onclick="format('bold')">Bold</button>
+<button onclick="format('italic')">Italic</button>
+<button onclick="format('underline')">Underline</button>
+<input type="file" onchange="addImage(this)">
 </div>
+
+<p><strong>Edit text by clicking inside sections above</strong></p>
+
+<h3>Submitted Questions</h3>
+<div id="questions"></div>
+</section>
 
 <footer>
 <p>© 2025 Smile Forward</p>
-<span id="admin-link" onclick="adminLogin()">admin</span>
+<span id="admin-link" onclick="login()">admin</span>
 </footer>
 
 <script>
-const PASSWORD = "admin123";
-
 function toggle(el){
-  const content = el.nextElementSibling;
-  content.classList.toggle("open");
+  el.nextElementSibling.classList.toggle("open");
 }
 
-function submitQuestion(){
-  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
-  qs.push({
-    name: document.getElementById("q-name").value || "Anonymous",
-    email: document.getElementById("q-email").value,
-    question: document.getElementById("q-text").value
+function submitQ(e){
+  e.preventDefault();
+  const q=JSON.parse(localStorage.getItem("qs")||"[]");
+  q.push({
+    name:qname.value||"Anonymous",
+    email:qemail.value,
+    text:qtext.value
   });
-  localStorage.setItem("questions", JSON.stringify(qs));
-  alert("Question sent!");
+  localStorage.setItem("qs",JSON.stringify(q));
+  alert("Submitted!");
 }
 
-function adminLogin(){
-  if(prompt("Password") === PASSWORD){
-    document.getElementById("admin-area").classList.remove("hidden");
-    loadAdminQuestions();
+function login(){
+  if(prompt("Password")==="admin123"){
+    admin.classList.remove("hidden");
+    mission-text.contentEditable=true;
+    why-text.contentEditable=true;
+    loadQs();
   }
 }
 
-function loadAdminQuestions(){
-  const qs = JSON.parse(localStorage.getItem("questions") || "[]");
-  const box = document.getElementById("admin-questions");
-  box.innerHTML = "";
+function loadQs(){
+  const qs=JSON.parse(localStorage.getItem("qs")||"[]");
+  questions.innerHTML="";
   qs.forEach((q,i)=>{
-    const div = document.createElement("div");
-    div.className = "question-card";
-    div.innerHTML = `
-      <strong>Submission ${i+1}</strong><br>
-      <strong>Name:</strong> ${q.name}<br>
-      <strong>Email:</strong> ${q.email}<br>
-      <strong>Question:</strong> ${q.question}
-    `;
-    box.appendChild(div);
+    questions.innerHTML+=`
+    <div class="admin-box">
+    <strong>${i+1}</strong><br>
+    Name: ${q.name}<br>
+    Email: ${q.email}<br>
+    Question: ${q.text}
+    </div>`;
   });
 }
+
+function format(cmd){
+  document.execCommand(cmd,false,null);
+}
+
+function addImage(input){
+  const file=input.files[0];
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const img=document.createElement("img");
+    img.src=reader.result;
+    img.style.maxWidth="100%";
+    document.getSelection().anchorNode.parentElement.appendChild(img);
+  };
+  reader.readAsDataURL(file);
+}
 </script>
+
+</body>
+</html>
+
 
 </body>
 </html>
