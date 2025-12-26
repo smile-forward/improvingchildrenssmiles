@@ -17,7 +17,7 @@ body {
 
 header {
   background: #cfe2ff;
-  padding: 40px;
+  padding: 40px 20px;
 }
 
 .header-wrap {
@@ -37,7 +37,7 @@ header {
 section {
   max-width: 900px;
   margin: auto;
-  padding: 25px;
+  padding: 25px 15px;
 }
 
 .button {
@@ -48,6 +48,7 @@ section {
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
+  width: fit-content;
 }
 
 .hidden { display: none; }
@@ -58,6 +59,7 @@ textarea, input, select {
   padding: 10px;
   font-family: "Times New Roman", serif;
   font-size: 16px;
+  box-sizing: border-box;
 }
 
 /* DROPDOWN */
@@ -71,11 +73,8 @@ textarea, input, select {
 
 .dropdown-content {
   display: none;
-  margin-top: 15px;
-}
-
-.dropdown.open .dropdown-content {
-  display: block;
+  overflow: visible !important; /* Force all content to be visible */
+  padding-top: 0;
 }
 
 /* IMAGE GROUPS */
@@ -112,7 +111,20 @@ textarea, input, select {
   margin-top: 20px;
 }
 
-/* FOOTER (REVERTED) */
+/* QUESTIONS ADMIN */
+.question-card {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #f7f7f7;
+}
+
+.question-card p {
+  margin: 4px 0;
+}
+
+/* FOOTER */
 footer {
   background: #eee;
   text-align: center;
@@ -124,6 +136,36 @@ footer {
   font-size: 11px;
   color: #999;
   cursor: pointer;
+}
+
+/* RESPONSIVE MOBILE STYLES */
+@media (max-width: 768px) {
+  header {
+    padding: 30px 15px;
+  }
+
+  .header-wrap {
+    flex-direction: column;
+  }
+
+  #logo {
+    height: 70px;
+    margin-bottom: 15px;
+  }
+
+  .image-row img {
+    width: 80%;
+    max-width: none;
+  }
+
+  .button {
+    width: 100%;
+    text-align: center;
+  }
+
+  section {
+    padding: 20px 10px;
+  }
 }
 </style>
 </head>
@@ -159,7 +201,7 @@ footer {
 <section>
 <h2>Donate</h2>
 <p id="donate-text"></p>
-<a id="donate-button" href="#" target="_blank">
+<a id="donate-button" href="https://gofund.me/9b7a69e30" target="_blank">
   <button class="button">Donate Now</button>
 </a>
 </section>
@@ -174,6 +216,14 @@ Each kit includes a toothbrush, toothpaste, floss, and educational material.
 We partner with shelters and community organizations to ensure transparency,
 accountability, and real measurable impact.
 </p>
+</section>
+
+<section>
+<h2>Have questions? Let us know!</h2>
+<input id="q-name" placeholder="Name (Optional)">
+<input id="q-email" placeholder="Your email">
+<textarea id="q-text" placeholder="Your question"></textarea>
+<button class="button" onclick="submitQuestion()">Send Question</button>
 </section>
 
 <div id="admin-area" class="hidden">
@@ -203,8 +253,8 @@ accountability, and real measurable impact.
 <label>Why Images (max 3)</label>
 <input type="file" multiple accept="image/*" onchange="uploadSectionImages(event,'why')">
 
-<label>Donate Button Link</label>
-<input id="donate-link-input">
+<h4>Submitted Questions</h4>
+<div id="admin-questions"></div>
 
 <button class="button" onclick="saveChanges()">Save Changes</button>
 </section>
@@ -221,9 +271,9 @@ const PASSWORD="admin123";
 const DEFAULT_CONTENT={
 title:"Restoring Smiles with Smile Forward",
 orgText:"A student based Non-Profit organization based in Mississauga promoting oral health awareness",
-mission:"For many people, brushing their teeth is a simple daily habit...",
-why:"Oral health is far more than just a bright smile...",
-donate:"Your support plays a vital role..."
+mission:"For many people, brushing their teeth is a simple daily habit, something done almost automatically, without a second thought. It is part of a routine that supports health, comfort, and confidence. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often limited or completely unavailable.<br><br>When essentials like toothbrushes, toothpaste, and floss are out of reach, oral health quickly becomes compromised, turning small, preventable issues into painful and persistent problems.<br><br>Our mission is to bridge this gap by providing essential oral hygiene kits to individuals who need them most. These kits include basic yet powerful tools for maintaining oral health, tools that help prevent infection, reduce discomfort, and support overall well-being. Beyond physical health, access to oral care plays a significant role in restoring confidence and dignity.<br><br>A healthy smile can influence how someone feels about themselves, how they interact with others, and how they navigate daily life. Through compassion-driven action, education, and community involvement, we aim to make oral health a priority rather than a privilege.<br><br>We believe that everyone deserves access to basic care, regardless of their circumstances. By addressing oral health needs at the most fundamental level, we are not only preventing disease but also supporting self-worth, resilience, and hope. Our work is rooted in the belief that meaningful change begins with small, consistent actions that collectively make a lasting impact.",
+why:"Oral health is far more than just a bright smile, it is a critical component of overall physical and mental health. Research has shown strong connections between poor oral hygiene and serious health conditions such as heart disease, diabetes, respiratory infections, and chronic inflammation. When oral health is neglected, bacteria in the mouth can enter the bloodstream, contributing to systemic health issues that extend well beyond the teeth and gums. For individuals facing housing insecurity, these risks are significantly heightened.<br><br>Limited access to dental care, hygiene supplies, and preventative education often means that oral health issues go untreated until they become severe. Pain, infection, and tooth loss can interfere with eating, speaking, and sleeping, making daily survival even more challenging.<br><br>Visible dental issues can impact self-esteem and create barriers to employment, social interaction, and access to services. Preventative oral care is one of the most effective and accessible ways to protect long-term health. Simple daily practices, when supported with the right tools, can prevent the majority of common dental problems.<br><br>By providing education and essential supplies, we help individuals take control of their oral health and reduce the likelihood of serious complications in the future. Investing in oral health is an investment in overall well-being, confidence, and quality of life.",
+donate:"Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness. Every contribution helps provide essential oral hygiene supplies that prevent pain, infection, and long-term complications. Together, we can create healthier smiles and stronger communities."
 };
 
 function loadText(id,key){
@@ -255,9 +305,14 @@ document.getElementById("logo").style.display="block";
 }
 
 document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
-document.getElementById("donate-button").href=localStorage.getItem("donateLink")||"#";
+
+// Force donate button to GoFundMe link on all devices
+document.getElementById("donate-button").href = "https://gofund.me/9b7a69e30";
+
+loadAdminQuestions();
 };
 
+// ADMIN FUNCTIONS
 function adminLogin(){
 if(prompt("Password")===PASSWORD){
 document.getElementById("admin-area").classList.remove("hidden");
@@ -265,6 +320,7 @@ document.getElementById("admin-area").classList.remove("hidden");
 document.getElementById(id).contentEditable=true;
 document.getElementById(id).classList.add("editable");
 });
+loadAdminQuestions();
 }
 }
 
@@ -273,17 +329,51 @@ function saveChanges(){
 localStorage.setItem(id,document.getElementById(id).innerHTML);
 document.getElementById(id).contentEditable=false;
 });
-localStorage.setItem("donateLink",document.getElementById("donate-link-input").value);
+localStorage.setItem("donateLink","https://gofund.me/9b7a69e30"); // permanent
 location.reload();
 }
 
-function toggleDropdown(el){el.parentElement.classList.toggle("open");}
-function format(cmd){document.execCommand(cmd,false,null);}
-function changeFontSize(v){
-document.body.style.fontSize=v+"px";
-localStorage.setItem("fontSize",v);
+// QUESTIONS
+function submitQuestion(){
+const qs=JSON.parse(localStorage.getItem("questions")||"[]");
+qs.push({
+name:document.getElementById("q-name").value||"Anonymous",
+email:document.getElementById("q-email").value,
+question:document.getElementById("q-text").value,
+viewed:false
+});
+localStorage.setItem("questions",JSON.stringify(qs));
+alert("Question sent!");
+loadAdminQuestions();
 }
 
+// DISPLAY QUESTIONS LIKE GOOGLE FORM
+function loadAdminQuestions(){
+const qs=JSON.parse(localStorage.getItem("questions")||"[]");
+const container=document.getElementById("admin-questions");
+container.innerHTML="";
+qs.forEach((q,i)=>{
+let div=document.createElement("div");
+div.className="question-card";
+div.innerHTML=`<p><strong>Submission ${i+1}</strong></p>
+<p><strong>Name:</strong> ${q.name}</p>
+<p><strong>Email:</strong> ${q.email}</p>
+<p><strong>Question:</strong> ${q.question}</p>`;
+container.appendChild(div);
+});
+}
+
+// DROPDOWN
+function toggleDropdown(el){
+let parent=el.parentElement;
+parent.classList.toggle("open");
+}
+
+// FORMAT & FONT
+function format(cmd){document.execCommand(cmd,false,null);}
+function changeFontSize(v){document.body.style.fontSize=v+"px";localStorage.setItem("fontSize",v);}
+
+// IMAGE UPLOAD
 function uploadLogo(e){
 let r=new FileReader();
 r.onload=()=>{
@@ -293,7 +383,6 @@ document.getElementById("logo").style.display="block";
 };
 r.readAsDataURL(e.target.files[0]);
 }
-
 function uploadSectionImages(e,key){
 let arr=[];
 Array.from(e.target.files).slice(0,3).forEach(f=>{
