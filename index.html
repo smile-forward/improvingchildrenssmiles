@@ -11,7 +11,7 @@ body {
   margin: 0;
   background: #f9f9f9;
   color: #333;
-  font-size: 20px; /* ENLARGED TEXT */
+  font-size: 20px;
   line-height: 1.9;
 }
 
@@ -80,27 +80,12 @@ textarea, input, select {
   border-radius: 6px;
 }
 
-/* ADMIN EDITING */
-.editable {
-  border: 1px dashed #aaa;
-  padding: 10px;
-}
-
 /* DONOR TRUST SECTION */
 #trust-section {
   background: #eef5ff;
   border-radius: 10px;
   padding: 30px;
   margin-top: 20px;
-}
-
-/* QUESTIONS ADMIN */
-.question-card {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 12px;
-  background: #f7f7f7;
 }
 
 footer {
@@ -133,13 +118,19 @@ footer {
 <section>
   <h2>Our Mission</h2>
   <p id="mission"></p>
-  <div id="mission-images" class="image-row"></div>
+
+  <div id="mission-images" class="image-row">
+    <img src="Screenshot 2025-12-25 8.45.46 AM.png" alt="Volunteers assembling oral hygiene kits">
+  </div>
 </section>
 
 <section>
   <h2>Why Oral Health Matters</h2>
   <p id="why"></p>
-  <div id="why-images" class="image-row"></div>
+
+  <div id="why-images" class="image-row">
+    <img src="Screenshot 2025-12-25 8.45.58 AM.png" alt="Oral hygiene tools">
+  </div>
 </section>
 
 <section>
@@ -167,12 +158,12 @@ accountability, and real measurable impact.
 <input id="q-name" placeholder="Name (Optional)">
 <input id="q-email" placeholder="Your email">
 <textarea id="q-text" placeholder="Your question"></textarea>
-<button class="button" onclick="submitQuestion()">Send Question</button>
+<button class="button">Send Question</button>
 </section>
 
 <footer>
 <p>© 2025 Smile Forward</p>
-<span id="admin-link" onclick="adminLogin()">admin</span>
+<span id="admin-link">admin</span>
 </footer>
 
 <script>
