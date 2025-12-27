@@ -65,4 +65,88 @@ section {
   background: #eef5ff;
   border-radius: 10px;
   padding: 30px;
-  margin-top: 20p
+  margin-top: 20px;
+}
+
+footer {
+  background: #eee;
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-wrap">
+    <div>
+      <h1 id="title"></h1>
+      <p id="org-text"></p>
+    </div>
+  </div>
+</header>
+
+<section>
+  <h2>Our Mission</h2>
+  <p id="mission"></p>
+
+  <div class="image-row">
+    <img src="mission.jpg" alt="Volunteers assembling oral hygiene kits">
+  </div>
+</section>
+
+<section>
+  <h2>Why Oral Health Matters</h2>
+  <p id="why"></p>
+
+  <div class="image-row">
+    <img src="why.jpg" alt="Oral hygiene tools">
+  </div>
+</section>
+
+<section>
+<h2>Donate</h2>
+<p id="donate-text"></p>
+<button class="button">Donate Now</button>
+</section>
+
+<section id="trust-section">
+<h2>How Your Donation Makes a Difference</h2>
+<p>
+100% of funds raised go directly toward assembling and distributing oral health kits.
+</p>
+</section>
+
+<footer>
+<p>© 2025 Smile Forward</p>
+</footer>
+
+<script>
+const DEFAULT_CONTENT={
+title:"Restoring Smiles with Smile Forward",
+orgText:"A student based Non-Profit organization based in Mississauga promoting oral health awareness",
+
+mission:"For many people, brushing their teeth is a simple daily habit...",
+
+why:"Oral health is far more than just a bright smile...",
+
+donate:"Your support plays a vital role in restoring dignity and improving health."
+};
+
+function loadText(id,key){
+document.getElementById(id).innerHTML=DEFAULT_CONTENT[key];
+}
+
+window.onload=()=>{
+loadText("title","title");
+loadText("org-text","orgText");
+loadText("mission","mission");
+loadText("why","why");
+loadText("donate-text","donate");
+};
+</script>
+
+</body>
+</html>
