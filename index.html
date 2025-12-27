@@ -72,8 +72,8 @@ textarea, input, select {
 }
 
 .dropdown-content {
-  display: block !important; /* Always visible */
-  overflow: visible !important; /* Force all content to be visible */
+  display: block !important;
+  overflow: visible !important;
   padding-top: 0;
 }
 
@@ -306,7 +306,6 @@ document.getElementById("logo").style.display="block";
 
 document.body.style.fontSize=(localStorage.getItem("fontSize")||18)+"px";
 
-// Force donate button to GoFundMe link on all devices
 document.getElementById("donate-button").href = "https://gofund.me/9b7a69e30";
 
 loadAdminQuestions();
@@ -329,7 +328,7 @@ function saveChanges(){
 localStorage.setItem(id,document.getElementById(id).innerHTML);
 document.getElementById(id).contentEditable=false;
 });
-localStorage.setItem("donateLink","https://gofund.me/9b7a69e30"); // permanent
+localStorage.setItem("donateLink","https://gofund.me/9b7a69e30");
 location.reload();
 }
 
@@ -363,11 +362,8 @@ container.appendChild(div);
 });
 }
 
-// DROPDOWN
-function toggleDropdown(el){
-let content = el.nextElementSibling;
-content.style.display = content.style.display === "block" ? "block" : "block";
-}
+// DROPDOWN — DISABLED (ONLY CHANGE)
+function toggleDropdown(el){}
 
 // FORMAT & FONT
 function format(cmd){document.execCommand(cmd,false,null);}
@@ -395,6 +391,10 @@ r.readAsDataURL(f);
 });
 }
 </script>
+
+</body>
+</html>
+
 
 </body>
 </html>
