@@ -48,19 +48,39 @@ section {
   border-radius: 6px;
   cursor: pointer;
   font-size: 18px;
+  width: fit-content;
 }
 
+.hidden { display: none; }
+
+textarea, input, select {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  font-family: "Times New Roman", serif;
+  font-size: 18px;
+  box-sizing: border-box;
+}
+
+.dropdown-content {
+  display: block !important;
+}
+
+/* IMAGE GROUPS */
 .image-row {
   display: flex;
+  gap: 10px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .image-row img {
-  width: 60%;
-  max-width: 400px;
+  width: 30%;
+  max-width: 250px;
   border-radius: 6px;
 }
 
+/* DONOR TRUST SECTION */
 #trust-section {
   background: #eef5ff;
   border-radius: 10px;
@@ -74,6 +94,12 @@ footer {
   padding: 10px;
   font-size: 12px;
 }
+
+#admin-link {
+  font-size: 11px;
+  color: #999;
+  cursor: pointer;
+}
 </style>
 </head>
 
@@ -81,6 +107,7 @@ footer {
 
 <header>
   <div class="header-wrap">
+    <img id="logo" alt="Organization Logo">
     <div>
       <h1 id="title"></h1>
       <p id="org-text"></p>
@@ -92,8 +119,8 @@ footer {
   <h2>Our Mission</h2>
   <p id="mission"></p>
 
-  <div class="image-row">
-    <img src="mission.jpg" alt="Volunteers assembling oral hygiene kits">
+  <div id="mission-images" class="image-row">
+    <img src="Screenshot 2025-12-25 8.45.46 AM.png" alt="Volunteers assembling oral hygiene kits">
   </div>
 </section>
 
@@ -101,26 +128,42 @@ footer {
   <h2>Why Oral Health Matters</h2>
   <p id="why"></p>
 
-  <div class="image-row">
-    <img src="why.jpg" alt="Oral hygiene tools">
+  <div id="why-images" class="image-row">
+    <img src="Screenshot 2025-12-25 8.45.58 AM.png" alt="Oral hygiene tools">
   </div>
 </section>
 
 <section>
 <h2>Donate</h2>
 <p id="donate-text"></p>
-<button class="button">Donate Now</button>
+<a id="donate-button" href="https://gofund.me/9b7a69e30" target="_blank">
+  <button class="button">Donate Now</button>
+</a>
 </section>
 
 <section id="trust-section">
 <h2>How Your Donation Makes a Difference</h2>
 <p>
 100% of funds raised go directly toward assembling and distributing oral health kits.
+Each kit includes a toothbrush, toothpaste, floss, and educational material.
 </p>
+<p>
+We partner with shelters and community organizations to ensure transparency,
+accountability, and real measurable impact.
+</p>
+</section>
+
+<section>
+<h2>Have questions? Let us know!</h2>
+<input id="q-name" placeholder="Name (Optional)">
+<input id="q-email" placeholder="Your email">
+<textarea id="q-text" placeholder="Your question"></textarea>
+<button class="button">Send Question</button>
 </section>
 
 <footer>
 <p>© 2025 Smile Forward</p>
+<span id="admin-link">admin</span>
 </footer>
 
 <script>
@@ -128,11 +171,11 @@ const DEFAULT_CONTENT={
 title:"Restoring Smiles with Smile Forward",
 orgText:"A student based Non-Profit organization based in Mississauga promoting oral health awareness",
 
-mission:"For many people, brushing their teeth is a simple daily habit...",
+mission:"For many people, brushing their teeth is a simple daily habit, something done almost automatically, without a second thought. It is part of a routine that supports health, comfort, and confidence. However, for individuals experiencing homelessness, access to basic oral hygiene supplies is often limited or completely unavailable.<br><br><strong>Oral health quickly becomes compromised</strong>, turning small, preventable issues into painful and persistent problems.<br><br>Our mission is to bridge this gap by <strong>providing essential oral hygiene kits</strong> to individuals who need them most. These kits include basic yet powerful tools for maintaining oral health, tools that help prevent infection, reduce discomfort, and support overall well-being. Beyond physical health, access to oral care plays a significant role in restoring <em>dignity</em>.<br><br>A healthy smile can influence how someone feels about themselves, how they interact with others, and how they navigate daily life. Through <strong>compassion-driven action, education, and community involvement</strong>, we aim to make oral health a priority rather than a privilege.<br><br>We believe that everyone deserves access to basic care, regardless of their circumstances. By addressing oral health needs at the most fundamental level, we are not only preventing disease but also supporting <u>self-worth, resilience, and hope</u>. Our work is rooted in the belief that meaningful change begins with small, consistent actions that collectively make a lasting impact.",
 
-why:"Oral health is far more than just a bright smile...",
+why:"Oral health is far more than just a <em>bright smile</em>, it is a critical component of overall physical and mental health. Research has shown strong connections between poor oral hygiene and serious health conditions such as <strong>heart disease, diabetes, respiratory infections, and chronic inflammation.</strong> When oral health is neglected, bacteria in the mouth can enter the bloodstream, contributing to systemic health issues that extend well beyond the teeth and gums.<br><br>Limited access to dental care, hygiene supplies, and preventative education often means that oral health issues go untreated until they become severe. Pain, infection, and tooth loss can interfere with eating, speaking, and sleeping, <strong>making daily survival even more challenging</strong>.<br><br>Visible dental issues can impact self-esteem and create barriers to employment, social interaction, and access to services. Preventative oral care is one of the most effective and accessible ways to protect long-term health.",
 
-donate:"Your support plays a vital role in restoring dignity and improving health."
+donate:"Your support plays a vital role in restoring dignity and improving health for individuals experiencing homelessness."
 };
 
 function loadText(id,key){
